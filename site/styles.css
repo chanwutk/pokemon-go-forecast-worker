@@ -1,0 +1,21 @@
+body {
+    color: rgb(102, 102, 102);
+}
+
+a {
+    text-decoration-line: none;
+}
+
+a:link {
+    color: rgb(255, 174, 0);
+}
+
+/* mouse over link */
+a:hover {
+    color: rgb(189, 129, 0);
+}
+
+/* selected link */
+a:active {
+    color: rgb(104, 71, 0);
+}

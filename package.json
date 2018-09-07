@@ -1,0 +1,24 @@
+{
+  "name": "pokemon-go-forecast",
+  "version": "1.0.0",
+  "description": "Pokemon Go forecast prediction server side",
+  "main": "forecast.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chanwutk/pokemon-go-forecast.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "site": "python -m SimpleHTTPServer",
+    "clear": "rm -f ./raw_weather/* && rm -f ./translated_weather/*",
+    "start": "node forecast.js"
+  },
+  "author": "Chanwut Kittivorawong",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^1.14.2"
+  },
+  "dependencies": {
+    "xmlhttprequest": "^1.8.0"
+  }
+}
