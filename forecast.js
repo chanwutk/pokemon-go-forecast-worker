@@ -26,7 +26,7 @@ function readLocalFile(url) {
 }
 
 function fetchWeather(locationId) {
-  let url = BASE_URL + locationId + '?apikey=' + apiKeys[keyCOunter] + '&details=true';
+  let url = BASE_URL + locationId + '?apikey=' + apiKeys[keyCounter] + '&details=true';
   keyCounter = (keyCounter + 1) % apiKeys.length;
   let xhttp = new XMLHttpRequest();
   let jsonOutput;

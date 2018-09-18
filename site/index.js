@@ -82,7 +82,7 @@ const spec = (data) => ({
 const render = () => {
   let xhttp = new XMLHttpRequest();
   let jsonText;
-  xhttp.open('GET', 'http://27ff5ae0.ngrok.io/weather.php', false);
+  xhttp.open('GET', 'https://27ff5ae0.ngrok.io/weather.php', false);
   xhttp.onreadystatechange = () => {
     if (xhttp.readyState === 4)
       if (xhttp.status === 200 || xhttp.status === 0) jsonText = xhttp.responseText;
