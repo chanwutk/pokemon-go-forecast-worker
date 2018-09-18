@@ -2,4 +2,5 @@
 /.vscode
 /raw_weather/*
 /translated_weather/*
+/resources/api-keys.js
 .DS_Store
