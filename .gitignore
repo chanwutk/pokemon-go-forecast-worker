@@ -1,6 +1,6 @@
 /node_modules
 /.vscode
 /raw_weather/*
-/translated_weather/*
+/translated_weather/weather.json
 /resources/api-keys.js
 .DS_Store

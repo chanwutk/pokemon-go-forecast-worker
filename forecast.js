@@ -1,7 +1,7 @@
 const locations = require('./resources/locations');
 const weatherMap = require('./resources/weather-map');
 const types = require('./resources/types-map');
-const apiKeys = require('./resources/apikey');
+const apiKeys = require('./resources/api-keys');
 const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 const fs = require('fs');
 

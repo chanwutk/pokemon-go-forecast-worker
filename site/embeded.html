@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vega@4.2.0/build/vega.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@3.0.0-rc5/build/vega-lite.js"></script>
+  <style>
+    body {
+      color: rgb(102, 102, 102);
+    }
+
+    a {
+      text-decoration-line: none;
+    }
+
+    a:link {
+      color: rgb(255, 174, 0);
+    }
+
+    /* mouse over link */
+    a:hover {
+      color: rgb(189, 129, 0);
+    }
+
+    /* selected link */
+    a:active {
+      color: rgb(104, 71, 0);
+    }
+  </style>
+  <title>Pokemon Go Forecast - Bangkok area</title>
+</head>
+
+<body>
+  <div id="date"></div>
+  <h1>Developed by <a href="http://github.com/chanwutk">Chanwut Kittivorawong</a></h1>
+  <div id="vis"></div>
+  <script>
+  const emojiMap = {
+    Windy: '🌪',
+    'Partly Cloudy': '⛅️',
+    Sunny: '☀️',
+    Clear: '🌙',
+    Cloudy: '☁️',
+    Fog: '🌫',
+    Rain: '☔️',
+    Snow: '⛄️',
+  };
+  const timeMap = {};
+  for (let i = 0; i < 24; i++) {
+    timeMap['' + i] = (i % 12) + (i >= 12 ? 'PM' : 'AM');
+  }
+  timeMap['0'] = '12AM';
+  timeMap['12'] = '12PM';
+  const spec = {
+    $schema: 'https://vega.github.io/schema/vega-lite/v2.json',
+    config: {
+      view: { stroke: '' },
+    },
+    width: 1500,
+    height: 500,
+    data: { url: 'http://343f8adf.ngrok.io/translated_weather/weather.json' },
+    transform: [
+      { calculate: 'datum.weather !== null', as: 'valid' },
+      { filter: { field: 'valid', equal: true } },
+      { calculate: JSON.stringify(emojiMap) + '[datum.weather]', as: 'emoji' },
+      { calculate: JSON.stringify(timeMap) + '[datum.time]', as: 'time' },
+    ],
+    encoding: {
+      x: {
+        field: 'time',
+        type: 'nominal',
+        axis: {
+          title: 'Time',
+          titleFontSize: 50,
+          titlePadding: 25,
+          labelAngle: 0,
+          labelFontSize: 30,
+          labelPadding: 15,
+          labelBaseline: 'bottom',
+          ticks: false,
+          domain: false,
+          orient: 'top',
+        },
+        sort: { field: 'order', op: 'min', order: 'ascending' },
+      },
+      y: {
+        field: 'city',
+        type: 'nominal',
+        axis: {
+          title: 'City',
+          titleFontSize: 50,
+          titlePadding: 25,
+          labelFontSize: 20,
+          labelPadding: 15,
+          ticks: false,
+          domain: false,
+        },
+      },
+    },
+    layer: [
+      {
+        mark: { type: 'text', baseline: 'middle' },
+        encoding: {
+          text: { field: 'emoji', type: 'nominal' },
+          size: { value: 50 },
+        },
+      },
+      {
+        mark: { type: 'text', baseline: 'middle', dy: 25 },
+        encoding: {
+          text: { field: 'types', type: 'nominal' },
+          size: { value: 8 },
+        },
+      },
+    ],
+  };
+  const parseSpec = vega.parse(vl.compile(spec).spec);
+  const render = () => {
+    new vega.View(parseSpec)
+      .renderer('svg')
+      .initialize('#vis')
+      .run();
+  };
+  render();
+  setInterval(render, 120000);
+  const d = new Date();
+  const date = document.getElementById('date');
+  date.innerHTML = d.toString();
+
+  </script>
+</body>
+
+</html>
