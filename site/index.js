@@ -14,7 +14,7 @@ for (let i = 0; i < 24; i++) {
 }
 timeMap['0'] = '12AM';
 timeMap['12'] = '12PM';
-const spec = (data) => ({
+const spec = data => ({
   $schema: 'https://vega.github.io/schema/vega-lite/v2.json',
   config: {
     view: { stroke: '' },
@@ -88,17 +88,15 @@ const render = () => {
       if (xhttp.status === 200 || xhttp.status === 0) jsonText = xhttp.responseText;
   };
   xhttp.send(null);
-
   var data = JSON.parse(jsonText);
   const parseSpec = vega.parse(vl.compile(spec(data)).spec);
-
   new vega.View(parseSpec)
     .renderer('svg')
     .initialize('#vis')
     .run();
 };
-render();
-setInterval(render, 120000);
 const d = new Date();
 const date = document.getElementById('date');
 date.innerHTML = d.toString();
+render();
+setInterval(render, 120000);
