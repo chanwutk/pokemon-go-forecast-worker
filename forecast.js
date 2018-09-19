@@ -26,21 +26,26 @@ function readLocalFile(url) {
 }
 
 function fetchWeather(locationId) {
-  let url = BASE_URL + locationId + '?apikey=' + apiKeys[keyCounter] + '&details=true';
-  keyCounter = (keyCounter + 1) % apiKeys.length;
-  let xhttp = new XMLHttpRequest();
-  let jsonOutput;
+  try {
+    let url = BASE_URL + locationId + '?apikey=' + apiKeys[keyCounter] + '&details=true';
+    keyCounter = (keyCounter + 1) % apiKeys.length;
+    let xhttp = new XMLHttpRequest();
+    let jsonOutput;
 
-  xhttp.onreadystatechange = () => {
-    if (xhttp.readyState === 4 && (xhttp.status === 200 || xhttp.status === 0))
-      jsonOutput = JSON.parse(xhttp.responseText);
-  };
-  xhttp.open('GET', url, false);
-  xhttp.send();
+    xhttp.onreadystatechange = () => {
+      if (xhttp.readyState === 4 && (xhttp.status === 200 || xhttp.status === 0))
+        jsonOutput = JSON.parse(xhttp.responseText);
+    };
+    xhttp.open('GET', url, false);
+    xhttp.send();
 
-  console.log('   Location fetched: ' + locations[locationId]);
+    console.log('   Location fetched: ' + locations[locationId]);
 
-  return jsonOutput;
+    return jsonOutput;
+  } catch (err) {
+    console.log('   fetch error:' + err);
+    return null;
+  }
 }
 
 const nianticFetchingHours = [2, 17];
@@ -101,6 +106,10 @@ var recordWeather = function() {
         const fileName = getFileName(id);
         let currentData = JSON.parse(readLocalFile(RAW_PATH + fileName));
         let newWeather = fetchWeather(id);
+        if (newWeather === null) {
+          currentHour = -1;
+          return;
+        }
 
         if (nianticFetchingHours.includes(hour)) {
           for (let i = 0; i < currentData.length; i++) {
