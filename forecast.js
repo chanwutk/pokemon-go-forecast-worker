@@ -96,7 +96,7 @@ var recordWeather = function() {
   let offset = date.getTimezoneOffset() / 60;
   let hour = date.getHours() + offset + 7;
 
-  if (currentHour !== hour) {
+  if (currentHour !== hour && date.getMinutes() > 0) {
     currentHour = hour;
     if (isHourToCheck(hour)) {
       console.log(logMessage(hour, 'fetching data'));
