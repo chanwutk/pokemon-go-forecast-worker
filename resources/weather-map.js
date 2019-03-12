@@ -21,18 +21,16 @@ exports.weatherMapWithWind = {
   Clear: CLEAR,
   'Mostly clear': CLEAR,
   'Partly cloudy': PARTLY_CLOUDY,
-  // 'Intermittent clouds': PARTLY_CLOUDY,
+  'Intermittent clouds': PARTLY_CLOUDY,
   'Hazy moonlight': CLOUDY,
-  // 'Mostly cloudy': CLOUDY,
-};
-exports.weatherMapWithoutWind = {
+  'Mostly cloudy': CLOUDY,
   Fog: FOG,
   Showers: RAIN,
   'Mostly cloudy w/ showers': CLOUDY,
   'Partly sunny w/ showers': PARTLY_CLOUDY,
   Thunderstorms: RAIN,
-  'Mostly cloudy w/ t-storms': CLOUDY,
-  'Partly sunny w/ t-storms': PARTLY_CLOUDY,
+  'Mostly cloudy w/ T-storms': CLOUDY,
+  'Partly sunny w/ T-storms': PARTLY_CLOUDY,
   Rain: RAIN,
   Flurries: RAIN,
   'Mostly cloudy w/ flurries': CLOUDY,
@@ -45,9 +43,11 @@ exports.weatherMapWithoutWind = {
   'Rain and snow': 'unknown',
   Windy: WINDY,
   'Partly cloudy w/ showers': PARTLY_CLOUDY,
-  // 'Mostly cloudy w/ showers': CLOUDY,
-  'Partly cloudy w/ t-storms': PARTLY_CLOUDY,
-  // 'Mostly cloudy w/ t-storms': CLOUDY,
-  // 'Mostly cloudy w/ flurries': CLOUDY,
+  'Mostly cloudy w/ showers': CLOUDY,
+  'Partly cloudy w/ T-storms': PARTLY_CLOUDY,
+  'Mostly cloudy w/ T-storms': CLOUDY,
+  'Mostly cloudy w/ flurries': CLOUDY,
   'Mostly cloudy w/ snow': CLOUDY,
+};
+exports.weatherMapWithoutWind = {
 };

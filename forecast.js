@@ -72,7 +72,7 @@ function translateWeather(data) {
   const iconPhrase = data.IconPhrase;
   if (weatherWithWind[iconPhrase]) {
     const windSpeed = data.Wind.Speed.Value;
-    return windSpeed >= 14 ? WINDY : weatherWithWind[iconPhrase];
+    return windSpeed >= 24 && data.PrecipitationProbability === 0 ? WINDY : weatherWithWind[iconPhrase];
   } else if (weatherWithoutWind[iconPhrase]) {
     return weatherWithoutWind[iconPhrase];
   } else {
@@ -91,7 +91,7 @@ function logMessage(hour, message) {
   return (hour < 10 ? ' ' : '') + hour + ':00 : ' + message;
 }
 
-var recordWeather = function() {
+var recordWeather = function () {
   let date = new Date();
   let offset = date.getTimezoneOffset() / 60;
   let hour = date.getHours() + offset + 7;
