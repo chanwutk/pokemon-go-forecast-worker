@@ -20,7 +20,7 @@ const spec = data => ({
   config: {
     view: { stroke: '' },
   },
-  width: 1500,
+  width: 1250,
   height: 500,
   data: { values: data },
   transform: [
