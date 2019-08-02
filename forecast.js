@@ -13,6 +13,7 @@ const BASE_URL = 'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/
 const ONE_MINUTE = 1000 * 60;
 const RAW_PATH = './raw_weather/';
 const TRANSLATED_PATH = './translated_weather/';
+const MI_TO_KM = 1.609;
 
 let currentHour = -1;
 let keyCounter = 0;
@@ -71,8 +72,11 @@ function writeToFile(fileName, string) {
 function translateWeather(data) {
   const iconPhrase = data.IconPhrase;
   if (weatherWithWind[iconPhrase]) {
-    const windSpeed = data.Wind.Speed.Value;
-    return windSpeed >= 24 && data.PrecipitationProbability === 0 ? WINDY : weatherWithWind[iconPhrase];
+    const windSpeed = data.Wind.Speed.Value * MI_TO_KM;
+    const gustSpeed = data.WindGust.Speed.Value * MI_TO_KM;
+    return (windSpeed >= 24.1 || windSpeed + gustSpeed >= 55) && !data.HasPrecipitation
+      ? WINDY
+      : weatherWithWind[iconPhrase];
   } else if (weatherWithoutWind[iconPhrase]) {
     return weatherWithoutWind[iconPhrase];
   } else {
@@ -91,7 +95,7 @@ function logMessage(hour, message) {
   return (hour < 10 ? ' ' : '') + hour + ':00 : ' + message;
 }
 
-var recordWeather = function () {
+const recordWeather = function() {
   let date = new Date();
   let offset = date.getTimezoneOffset() / 60;
   let hour = date.getHours() + offset + 7;
