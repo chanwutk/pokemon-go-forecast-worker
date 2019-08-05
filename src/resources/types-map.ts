@@ -1,6 +1,6 @@
 const CLEAR_AND_SUNNY: string = 'Fire, Grass, Gound';
 
-export const weatherToType = {
+export const inGameWeatherToType = {
   Clear: CLEAR_AND_SUNNY,
   Sunny: CLEAR_AND_SUNNY,
   'Partly Cloudy': 'Normal, Rock',
@@ -11,4 +11,4 @@ export const weatherToType = {
   Windy: 'Dragon, Flying, Psychic',
 };
 
-export type WeatherToTypeProps = keyof typeof weatherToType;
+export type InGameWeather = keyof typeof inGameWeatherToType;

@@ -7,7 +7,7 @@ const FOG: string = 'Fog';
 const RAIN: string = 'Rain';
 const SNOW: string = 'Snow';
 
-export const weathersMap: object = {
+export const iconPhraseToInGameWeather: object = {
   Sunny: SUNNY,
   'Mostly sunny': SUNNY,
   'Partly sunny': PARTLY_CLOUDY,
@@ -42,4 +42,4 @@ export const weathersMap: object = {
   'Partly cloudy w/ t-storms': PARTLY_CLOUDY,
 };
 
-export type IconPhrase = keyof typeof weathersMap;
+export type IconPhrase = keyof typeof iconPhraseToInGameWeather;

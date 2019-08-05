@@ -1,4 +1,4 @@
-export const locations = {
+export const locationIdToLocation = {
   '318849': 'กรุงเทพ',
   '318834': 'รามคำแหง',
   '320623': 'บางพลี',
@@ -8,4 +8,4 @@ export const locations = {
   '317582': 'ชลบุรี',
 };
 
-export type LocationIds = keyof typeof locations;
+export type LocationId = keyof typeof locationIdToLocation;

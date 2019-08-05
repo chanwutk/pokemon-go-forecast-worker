@@ -1,9 +1,9 @@
 import { XMLHttpRequest } from 'xmlhttprequest-ts';
 import * as fs from 'fs';
 
-import {locations, LocationIds} from './resources/locations';
-import {IconPhrase, weathersMap, WINDY} from './resources/weather-map';
-import { weatherToType, WeatherToTypeProps } from './resources/types-map';
+import {locationIdToLocation, LocationId} from './resources/locations';
+import {iconPhraseToInGameWeather, IconPhrase, WINDY} from './resources/weather-map';
+import {inGameWeatherToType, InGameWeather} from './resources/types-map';
 import apiKeys from './resources/api-keys';
 
 const BASE_URL = 'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
@@ -23,7 +23,7 @@ function readLocalFile(url: string): string {
   }
 }
 
-function fetchWeather(locationId: LocationIds): any[] | null {
+function fetchWeather(locationId: LocationId): any[] | null {
   try {
     let url = `${BASE_URL}${locationId}?apikey=${apiKeys[keyCounter]}&details=true`;
     keyCounter = (keyCounter + 1) % apiKeys.length;
@@ -37,7 +37,7 @@ function fetchWeather(locationId: LocationIds): any[] | null {
     xhttp.open('GET', url, false);
     xhttp.send();
 
-    console.log('   Location fetched: ' + locations[locationId]);
+    console.log('   Location fetched: ' + locationIdToLocation[locationId]);
 
     return jsonOutput;
   } catch (err) {
@@ -71,12 +71,12 @@ function writeToFile(fileName: string, content: string) {
 
 function translateWeather(data: any): string {
   const iconPhrase = data.IconPhrase as IconPhrase;
-  if (weathersMap[iconPhrase]) {
+  if (iconPhraseToInGameWeather[iconPhrase]) {
     const windSpeed = data.Wind.Speed.Value * MI_TO_KM;
     const gustSpeed = data.WindGust.Speed.Value * MI_TO_KM;
     return (windSpeed >= 24.1 || windSpeed + gustSpeed >= 55) && !data.HasPrecipitation
       ? WINDY
-      : weathersMap[iconPhrase];
+      : iconPhraseToInGameWeather[iconPhrase];
   } else {
     console.log(`Phrase not matched (${iconPhrase})`);
     return `not-matched (${iconPhrase})`;
@@ -104,10 +104,10 @@ function recordWeather() {
       console.log(logMessage(hour, 'fetching data'));
 
       let outputData = [];
-      for (const id in locations) {
+      for (const id in locationIdToLocation) {
         const fileName = getFileName(id);
         let currentData = JSON.parse(readLocalFile(RAW_PATH + fileName));
-        let newWeather = fetchWeather(id as LocationIds);
+        let newWeather = fetchWeather(id as LocationId);
         if (newWeather === null) {
           currentHour = -1;
           return;
@@ -134,9 +134,9 @@ function recordWeather() {
           if (order <= 12) {
             outputData.push({
               time: Number(time),
-              city: locations[id as LocationIds],
+              city: locationIdToLocation[id as LocationId],
               weather,
-              types: weatherToType[weather as WeatherToTypeProps],
+              types: inGameWeatherToType[weather as InGameWeather],
               order,
             });
           }
@@ -170,7 +170,7 @@ function recordWeather() {
 };
 
 const INITIAL_WEATHER_DATA = JSON.stringify(new Array(24).fill(null));
-for (const id in locations) {
+for (const id in locationIdToLocation) {
   const fileName = getFileName(id);
   writeToFile(RAW_PATH + fileName, INITIAL_WEATHER_DATA);
 }
