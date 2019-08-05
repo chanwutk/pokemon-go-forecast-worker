@@ -1,13 +1,10 @@
-const locations = require('./resources/locations');
-const weatherMap = require('./resources/weather-map');
-const types = require('./resources/types-map');
-const apiKeys = require('./resources/api-keys');
-const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
-const fs = require('fs');
+import { XMLHttpRequest } from 'xmlhttprequest-ts';
+import * as fs from 'fs';
 
-const weatherWithWind = weatherMap.weatherMapWithWind;
-const weatherWithoutWind = weatherMap.weatherMapWithoutWind;
-const WINDY = weatherMap.WINDY;
+import {locations, LocationIds} from './resources/locations';
+import {IconPhrase, weathersMap, WINDY} from './resources/weather-map';
+import { weatherToType, WeatherToTypeProps } from './resources/types-map';
+import apiKeys from './resources/api-keys';
 
 const BASE_URL = 'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
 const ONE_MINUTE = 1000 * 60;
@@ -18,7 +15,7 @@ const MI_TO_KM = 1.609;
 let currentHour = -1;
 let keyCounter = 0;
 
-function readLocalFile(url) {
+function readLocalFile(url: string): string {
   try {
     return fs.readFileSync(url).toString();
   } catch (err) {
@@ -26,12 +23,12 @@ function readLocalFile(url) {
   }
 }
 
-function fetchWeather(locationId) {
+function fetchWeather(locationId: LocationIds): any[] | null {
   try {
-    let url = BASE_URL + locationId + '?apikey=' + apiKeys[keyCounter] + '&details=true';
+    let url = `${BASE_URL}${locationId}?apikey=${apiKeys[keyCounter]}&details=true`;
     keyCounter = (keyCounter + 1) % apiKeys.length;
     let xhttp = new XMLHttpRequest();
-    let jsonOutput;
+    let jsonOutput: any[] = [];
 
     xhttp.onreadystatechange = () => {
       if (xhttp.readyState === 4 && (xhttp.status === 200 || xhttp.status === 0))
@@ -52,50 +49,51 @@ function fetchWeather(locationId) {
 const nianticFetchingHours = [2, 17];
 const extraFetchingHours = [3, 4, 5, 6, 7];
 const fetchingHours = nianticFetchingHours.concat(extraFetchingHours);
-function isHourToCheck(hour) {
+function isHourToCheck(hour: number): boolean {
   return fetchingHours.includes(hour);
 }
 
-function extractTime(weatherData) {
+function extractTime(weatherData: any): {
+  time: number;
+  data: any;
+} {
   let time = Number(weatherData.DateTime.split('T')[1].split(':')[0]);
   return { time, data: weatherData };
 }
 
-function getFileName(id) {
-  return 'weather_' + id + '.json';
+function getFileName(id: string): string {
+  return `weather_${id}.json`;
 }
 
-function writeToFile(fileName, string) {
-  fs.writeFileSync(fileName, string);
+function writeToFile(fileName: string, content: string) {
+  fs.writeFileSync(fileName, content);
 }
 
-function translateWeather(data) {
-  const iconPhrase = data.IconPhrase;
-  if (weatherWithWind[iconPhrase]) {
+function translateWeather(data: any): string {
+  const iconPhrase = data.IconPhrase as IconPhrase;
+  if (weathersMap[iconPhrase]) {
     const windSpeed = data.Wind.Speed.Value * MI_TO_KM;
     const gustSpeed = data.WindGust.Speed.Value * MI_TO_KM;
     return (windSpeed >= 24.1 || windSpeed + gustSpeed >= 55) && !data.HasPrecipitation
       ? WINDY
-      : weatherWithWind[iconPhrase];
-  } else if (weatherWithoutWind[iconPhrase]) {
-    return weatherWithoutWind[iconPhrase];
+      : weathersMap[iconPhrase];
   } else {
-    console.log('Phrase not matched (' + iconPhrase + ')');
-    return 'not-matched (' + iconPhrase + ')';
+    console.log(`Phrase not matched (${iconPhrase})`);
+    return `not-matched (${iconPhrase})`;
   }
 }
 
-function translateRawData(data) {
-  return data.map(d => {
+function translateRawData(data: any): string[] {
+  return data.map((d: any): string | null => {
     return d !== null ? translateWeather(d) : null;
   });
 }
 
-function logMessage(hour, message) {
-  return (hour < 10 ? ' ' : '') + hour + ':00 : ' + message;
+function logMessage(hour: number, message: string): string {
+  return `${(hour < 10 ? ' ' : '')}${hour}:00 : ${message}`;
 }
 
-const recordWeather = function() {
+function recordWeather() {
   let date = new Date();
   let offset = date.getTimezoneOffset() / 60;
   let hour = date.getHours() + offset + 7;
@@ -109,7 +107,7 @@ const recordWeather = function() {
       for (const id in locations) {
         const fileName = getFileName(id);
         let currentData = JSON.parse(readLocalFile(RAW_PATH + fileName));
-        let newWeather = fetchWeather(id);
+        let newWeather = fetchWeather(id as LocationIds);
         if (newWeather === null) {
           currentHour = -1;
           return;
@@ -136,9 +134,9 @@ const recordWeather = function() {
           if (order <= 12) {
             outputData.push({
               time: Number(time),
-              city: locations[id],
+              city: locations[id as LocationIds],
               weather,
-              types: types[weather],
+              types: weatherToType[weather as WeatherToTypeProps],
               order,
             });
           }

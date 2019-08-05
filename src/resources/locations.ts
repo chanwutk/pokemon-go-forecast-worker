@@ -1,4 +1,4 @@
-module.exports = {
+export const locations = {
   '318849': 'กรุงเทพ',
   '318834': 'รามคำแหง',
   '320623': 'บางพลี',
@@ -7,3 +7,5 @@ module.exports = {
   // '318835': 'บางเขน', // same as นนทบุรี
   '317582': 'ชลบุรี',
 };
+
+export type LocationIds = keyof typeof locations;

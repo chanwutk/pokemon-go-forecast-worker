@@ -9,16 +9,21 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "site": "python -m SimpleHTTPServer",
-    "clear": "rm -f ./raw_weather/* && rm -f ./translated_weather/*",
-    "start": "node forecast.js"
+    "start": "npm build && node dist/app.js",
+    "build": "tsc -p ."
   },
   "author": "Chanwut Kittivorawong",
   "license": "MIT",
   "devDependencies": {
-    "prettier": "^1.14.2"
+    "@types/express": "^4.17.0",
+    "@types/node": "^12.6.9",
+    "nodemon": "^1.19.1",
+    "prettier": "^1.14.2",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
   },
   "dependencies": {
-    "xmlhttprequest": "^1.8.0"
+    "express": "^4.17.1",
+    "xmlhttprequest-ts": "^1.0.1"
   }
 }

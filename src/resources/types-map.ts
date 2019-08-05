@@ -1,6 +1,6 @@
-const CLEAR_AND_SUNNY = 'Fire, Grass, Gound';
+const CLEAR_AND_SUNNY: string = 'Fire, Grass, Gound';
 
-module.exports = {
+export const weatherToType = {
   Clear: CLEAR_AND_SUNNY,
   Sunny: CLEAR_AND_SUNNY,
   'Partly Cloudy': 'Normal, Rock',
@@ -10,3 +10,5 @@ module.exports = {
   Fog: 'Dark, Ghost',
   Windy: 'Dragon, Flying, Psychic',
 };
+
+export type WeatherToTypeProps = keyof typeof weatherToType;
