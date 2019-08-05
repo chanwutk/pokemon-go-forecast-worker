@@ -1,5 +1,6 @@
 .DS_Store
 /node_modules
 
+.node-xmlhttprequest-sync-*
 /src/resources/api-keys.js
 /dist/
