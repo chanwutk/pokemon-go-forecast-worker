@@ -3,4 +3,5 @@
 /raw_weather/*
 /translated_weather/weather.json
 /resources/api-keys.js
+/src/resources/api-keys.js
 .DS_Store
