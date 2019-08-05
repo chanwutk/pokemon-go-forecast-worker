@@ -1,6 +1,9 @@
-/node_modules
-/.vscode
-/raw_weather/*
-/translated_weather/weather.json
-/resources/api-keys.js
 .DS_Store
+/node_modules
+
+.node-xmlhttprequest-sync-*
+/raw_weather/
+/translated_weather/
+/src/resources/api-keys.ts
+/resources/api-keys.js
+/dist/
