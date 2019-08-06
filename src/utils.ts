@@ -1,6 +1,6 @@
 import { XMLHttpRequest } from 'xmlhttprequest-ts';
 import * as fs from 'fs';
-import {iconPhraseToInGameWeather, IconPhrase, WINDY} from './resources/game-info';
+import { iconPhraseToInGameWeather, IconPhrase, WINDY } from './resources/game-info';
 import apiKeys from './resources/api-keys';
 import { LocationId, locationIdToLocation } from './resources/locations';
 
@@ -48,13 +48,15 @@ export function isHourToCheck(hour: number): boolean {
   return fetchingHours.includes(hour);
 }
 
-export function extractTime(weatherData: RawDatum): {
+export function extractTime(
+  weatherData: RawDatum,
+): {
   time: number;
   data: RawDatum;
 } {
   return {
     time: Number(weatherData.DateTime.split('T')[1].split(':')[0]),
-    data: weatherData
+    data: weatherData,
   };
 }
 
@@ -81,11 +83,13 @@ export function translateWeather(data: RawDatum): string {
 }
 
 export function translateRawData(data: RawDatum[]): (string | null)[] {
-  return data.map((d: RawDatum): string | null => {
-    return d !== null ? translateWeather(d) : null;
-  });
+  return data.map(
+    (d: RawDatum): string | null => {
+      return d !== null ? translateWeather(d) : null;
+    },
+  );
 }
 
 export function logMessage(hour: number, message: string): string {
-  return `${(hour < 10 ? ' ' : '')}${hour}:00 : ${message}`;
+  return `${hour < 10 ? ' ' : ''}${hour}:00 : ${message}`;
 }

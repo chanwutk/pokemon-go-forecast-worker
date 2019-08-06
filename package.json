@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prettierbase": "prettier --write src/{,**/,**/**/}*.ts",
     "start": "npm run build && node ./dist/app.js",
     "build": "rm -rf ./dist && tsc -p ."
   },

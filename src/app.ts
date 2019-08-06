@@ -1,6 +1,16 @@
-import {locationIdToLocation, LocationId} from './resources/locations';
-import {inGameWeatherToType, InGameWeather} from './resources/game-info';
-import { isHourToCheck, logMessage, getFileName, readLocalFile, fetchWeather, nianticFetchingHours, extractTime, writeToFile, translateRawData } from './utils';
+import { locationIdToLocation, LocationId } from './resources/locations';
+import { inGameWeatherToType, InGameWeather } from './resources/game-info';
+import {
+  isHourToCheck,
+  logMessage,
+  getFileName,
+  readLocalFile,
+  fetchWeather,
+  nianticFetchingHours,
+  extractTime,
+  writeToFile,
+  translateRawData,
+} from './utils';
 
 const ONE_MINUTE = 1000 * 60;
 const RAW_PATH = './raw_weather/';
