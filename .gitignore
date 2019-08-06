@@ -5,4 +5,5 @@
 /raw_weather/
 /translated_weather/
 /src/resources/api-keys.js
+/resources/api-keys.js
 /dist/
