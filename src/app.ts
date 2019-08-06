@@ -2,8 +2,7 @@ import { XMLHttpRequest } from 'xmlhttprequest-ts';
 import * as fs from 'fs';
 
 import {locationIdToLocation, LocationId} from './resources/locations';
-import {iconPhraseToInGameWeather, IconPhrase, WINDY} from './resources/weather-map';
-import {inGameWeatherToType, InGameWeather} from './resources/types-map';
+import {inGameWeatherToType, InGameWeather, iconPhraseToInGameWeather, IconPhrase, WINDY} from './resources/game-info';
 import apiKeys from './resources/api-keys';
 
 const BASE_URL = 'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
@@ -11,6 +10,7 @@ const ONE_MINUTE = 1000 * 60;
 const RAW_PATH = './raw_weather/';
 const TRANSLATED_PATH = './translated_weather/';
 const MI_TO_KM = 1.609;
+const BKK_TZ_OFFSET = 7;
 
 let currentHour = -1;
 let keyCounter = 0;
@@ -96,7 +96,7 @@ function logMessage(hour: number, message: string): string {
 function recordWeather() {
   let date = new Date();
   let offset = date.getTimezoneOffset() / 60;
-  let hour = date.getHours() + offset + 7;
+  let hour = (date.getHours() + offset + BKK_TZ_OFFSET) % 24;
 
   if (currentHour !== hour && date.getMinutes() > 0) {
     currentHour = hour;
