@@ -2,7 +2,7 @@
   "name": "pokemon-go-forecast",
   "version": "1.0.0",
   "description": "Pokemon Go forecast prediction server side",
-  "main": "forecast.js",
+  "main": "dist/app.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/chanwutk/pokemon-go-forecast.git"
