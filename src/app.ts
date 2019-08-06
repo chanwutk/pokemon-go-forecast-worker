@@ -32,7 +32,9 @@ function recordWeather() {
       const outputData: OutputDatum[] = [];
       for (const id in locationIdToLocation) {
         const fileName: string = getFileName(id);
-        const currentData: RawDatum[] = JSON.parse(readLocalFile(RAW_PATH + fileName));
+        const currentData: (RawDatum | null)[] = JSON.parse(
+          readLocalFile(RAW_PATH + fileName),
+        ) as (RawDatum | null)[];
 
         let newWeather: RawDatum[];
         try {
@@ -50,10 +52,10 @@ function recordWeather() {
 
         for (let i = 1; i < newWeather.length; i++) {
           // TODO: remove data
-          const { time, data } = extractTime(newWeather[i]);
+          const { time, datum } = extractTime(newWeather[i]);
           if (!nianticFetchingHours.includes(hour)) {
-            if (currentData[time] === null) currentData[time] = data;
-          } else currentData[time] = data;
+            if (currentData[time] === null) currentData[time] = datum;
+          } else currentData[time] = datum;
         }
 
         writeToFile(RAW_PATH + fileName, JSON.stringify(currentData));

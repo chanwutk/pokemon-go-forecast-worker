@@ -6,4 +6,18 @@ interface OutputDatum {
   order: number;
 }
 
-type RawDatum = any;
+interface RawDatum {
+  DateTime: string;
+  IconPhrase: string;
+  Wind: {
+    Speed: {
+      Value: number;
+    };
+  };
+  WindGust: {
+    Speed: {
+      Value: number;
+    };
+  };
+  HasPrecipitation: boolean;
+}

@@ -30,7 +30,7 @@ export function fetchWeather(locationId: LocationId): RawDatum[] {
 
     xhttp.onreadystatechange = () => {
       if (xhttp.readyState === 4 && (xhttp.status === 200 || xhttp.status === 0))
-        jsonOutput = JSON.parse(xhttp.responseText);
+        jsonOutput = JSON.parse(xhttp.responseText) as RawDatum[];
     };
     xhttp.open('GET', url, false);
     xhttp.send();
@@ -49,14 +49,14 @@ export function isHourToCheck(hour: number): boolean {
 }
 
 export function extractTime(
-  weatherData: RawDatum,
+  weatherDatum: RawDatum,
 ): {
   time: number;
-  data: RawDatum;
+  datum: RawDatum;
 } {
   return {
-    time: Number(weatherData.DateTime.split('T')[1].split(':')[0]),
-    data: weatherData,
+    time: Number(weatherDatum.DateTime.split('T')[1].split(':')[0]),
+    datum: weatherDatum,
   };
 }
 
@@ -68,12 +68,12 @@ export function writeToFile(fileName: string, content: string) {
   fs.writeFileSync(fileName, content);
 }
 
-export function translateWeather(data: RawDatum): string {
-  const iconPhrase: IconPhrase = <IconPhrase>data.IconPhrase;
+export function translateWeather(datum: RawDatum): string {
+  const iconPhrase: IconPhrase = datum.IconPhrase as IconPhrase;
   if (iconPhraseToInGameWeather[iconPhrase]) {
-    const windSpeed: number = data.Wind.Speed.Value * MI_TO_KM;
-    const gustSpeed: number = data.WindGust.Speed.Value * MI_TO_KM;
-    return (windSpeed >= 24.1 || windSpeed + gustSpeed >= 55) && !data.HasPrecipitation
+    const windSpeed: number = datum.Wind.Speed.Value * MI_TO_KM;
+    const gustSpeed: number = datum.WindGust.Speed.Value * MI_TO_KM;
+    return (windSpeed >= 24.1 || windSpeed + gustSpeed >= 55) && !datum.HasPrecipitation
       ? WINDY
       : iconPhraseToInGameWeather[iconPhrase];
   } else {
@@ -82,9 +82,9 @@ export function translateWeather(data: RawDatum): string {
   }
 }
 
-export function translateRawData(data: RawDatum[]): (string | null)[] {
+export function translateRawData(data: (RawDatum | null)[]): (string | null)[] {
   return data.map(
-    (d: RawDatum): string | null => {
+    (d: RawDatum | null): string | null => {
       return d !== null ? translateWeather(d) : null;
     },
   );
