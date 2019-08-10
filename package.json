@@ -2,23 +2,28 @@
   "name": "pokemon-go-forecast",
   "version": "1.0.0",
   "description": "Pokemon Go forecast prediction server side",
-  "main": "forecast.js",
+  "main": "dist/app.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/chanwutk/pokemon-go-forecast.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "site": "python -m SimpleHTTPServer",
-    "clear": "rm -f ./raw_weather/* && rm -f ./translated_weather/*",
-    "start": "node forecast.js"
+    "prettierbase": "prettier --write src/{,**/,**/**/}*.ts",
+    "start": "npm run build && node ./dist/app.js",
+    "build": "rm -rf ./dist && tsc -p ."
   },
   "author": "Chanwut Kittivorawong",
   "license": "MIT",
   "devDependencies": {
-    "prettier": "^1.14.2"
+    "@types/express": "^4.17.0",
+    "@types/node": "^12.6.9",
+    "prettier": "^1.14.2",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
   },
   "dependencies": {
-    "xmlhttprequest": "^1.8.0"
+    "express": "^4.17.1",
+    "xmlhttprequest-ts": "^1.0.1"
   }
 }

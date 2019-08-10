@@ -1,15 +1,28 @@
-const WINDY = 'Windy';
-const PARTLY_CLOUDY = 'Partly Cloudy';
-const SUNNY = 'Sunny';
-const CLEAR = 'Clear';
-const CLOUDY = 'Cloudy';
-const FOG = 'Fog';
-const RAIN = 'Rain';
-const SNOW = 'Snow';
+const CLEAR_AND_SUNNY: string = 'Fire, Grass, Gound';
 
-exports.WINDY = WINDY;
+export const inGameWeatherToType = {
+  Clear: CLEAR_AND_SUNNY,
+  Sunny: CLEAR_AND_SUNNY,
+  'Partly Cloudy': 'Normal, Rock',
+  Cloudy: 'Fairy, Fighting, Poison',
+  Rain: 'Water, Electric, Bug',
+  Snow: 'Ice, Steel',
+  Fog: 'Dark, Ghost',
+  Windy: 'Dragon, Flying, Psychic',
+};
 
-exports.weatherMapWithWind = {
+export type InGameWeather = keyof typeof inGameWeatherToType;
+
+export const WINDY: string = 'Windy';
+const PARTLY_CLOUDY: string = 'Partly Cloudy';
+const SUNNY: string = 'Sunny';
+const CLEAR: string = 'Clear';
+const CLOUDY: string = 'Cloudy';
+const FOG: string = 'Fog';
+const RAIN: string = 'Rain';
+const SNOW: string = 'Snow';
+
+export const iconPhraseToInGameWeather: object = {
   Sunny: SUNNY,
   'Mostly sunny': SUNNY,
   'Partly sunny': PARTLY_CLOUDY,
@@ -21,9 +34,7 @@ exports.weatherMapWithWind = {
   Clear: CLEAR,
   'Mostly clear': CLEAR,
   'Partly cloudy': PARTLY_CLOUDY,
-  'Intermittent clouds': PARTLY_CLOUDY,
   'Hazy moonlight': CLOUDY,
-  'Mostly cloudy': CLOUDY,
   Fog: FOG,
   Showers: RAIN,
   'Mostly cloudy w/ showers': CLOUDY,
@@ -43,11 +54,7 @@ exports.weatherMapWithWind = {
   'Rain and snow': 'unknown',
   Windy: WINDY,
   'Partly cloudy w/ showers': PARTLY_CLOUDY,
-  'Mostly cloudy w/ showers': CLOUDY,
   'Partly cloudy w/ t-storms': PARTLY_CLOUDY,
-  'Mostly cloudy w/ t-storms': CLOUDY,
-  'Mostly cloudy w/ flurries': CLOUDY,
-  'Mostly cloudy w/ snow': CLOUDY,
 };
-exports.weatherMapWithoutWind = {
-};
+
+export type IconPhrase = keyof typeof iconPhraseToInGameWeather;
