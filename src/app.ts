@@ -18,7 +18,7 @@ setInterval(recordWeather, ONE_MINUTE);
 
 // -------------------------------- make API -------------------------------- //
 const app = express();
-const port = 8080;
+const port = 8000;
 
 app.get('/', (req: Request, res: Response) => {
   res.send(readLocalFile('weather.json'));
