@@ -2,6 +2,7 @@ import { locationIdToLocation } from './resources/locations';
 import { getFileName, writeToFile, readLocalFile } from './utils';
 import recordWeather from './recordWeather';
 import express, { Request, Response } from 'express';
+import { NextFunction } from 'connect';
 
 const ONE_MINUTE = 1000 * 60;
 const RAW_PATH = './raw_weather/';
@@ -19,6 +20,12 @@ setInterval(recordWeather, ONE_MINUTE);
 // -------------------------------- make API -------------------------------- //
 const app = express();
 const port = 8000;
+
+app.use(function(req: Request, res: Response, next: NextFunction) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
 app.get('/', (req: Request, res: Response) => {
   res.send(readLocalFile('weather.json'));
