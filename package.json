@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettierbase": "prettier --write src/{,**/,**/**/}*.ts",
     "start": "npm run build && node ./dist/app.js",
-    "build": "del --force dist && tsc --project ."
+    "build": "del-cli --force dist && tsc --project ."
   },
   "author": "Chanwut Kittivorawong",
   "license": "MIT",
