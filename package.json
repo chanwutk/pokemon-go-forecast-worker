@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
+    "xmlhttprequest": "^1.8.0",
     "xmlhttprequest-ts": "^1.0.1"
   }
 }

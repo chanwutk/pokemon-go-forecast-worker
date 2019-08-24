@@ -1,3 +1,5 @@
+declare module 'xmlhttprequest';
+
 interface OutputDatum {
   time: number;
   city: string;

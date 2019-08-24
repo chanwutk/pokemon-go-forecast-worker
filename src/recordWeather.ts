@@ -39,42 +39,40 @@ function addNewRecords(hour: number) {
       readLocalFile(RAW_PATH + fileName),
     ) as (RawDatum | null)[];
 
-    let newWeather: RawDatum[];
     try {
-      newWeather = fetchWeather(id as LocationId);
+      const newWeather: RawDatum[] = fetchWeather(id as LocationId);
+      if (nianticFetchingHours.includes(hour)) {
+        for (let i = 0; i < currentData.length; i++) {
+          if (i !== hour && i !== hour + 1) currentData[i] = null;
+        }
+      }
+
+      for (let i = 1; i < newWeather.length; i++) {
+        // TODO: remove data
+        const { time, datum } = extractTimeFromRawDatum(newWeather[i]);
+        if (!nianticFetchingHours.includes(hour)) {
+          if (currentData[time] === null) currentData[time] = datum;
+        } else currentData[time] = datum;
+      }
+
+      writeToFile(RAW_PATH + fileName, JSON.stringify(currentData));
+      const translatedData: (string | null)[] = translateRawData(currentData);
+      for (const time in translatedData) {
+        const weather: string | null = translatedData[time];
+        const order: number = (Number(time) + 24 - hour) % 24;
+        if (order <= 12) {
+          outputData.push({
+            time: Number(time),
+            city: locationIdToLocation[id as LocationId],
+            weather,
+            types: inGameWeatherToType[weather as InGameWeather],
+            order,
+          });
+        }
+      }
     } catch (err) {
       currentHour = -1;
       return;
-    }
-
-    if (nianticFetchingHours.includes(hour)) {
-      for (let i = 0; i < currentData.length; i++) {
-        if (i !== hour && i !== hour + 1) currentData[i] = null;
-      }
-    }
-
-    for (let i = 1; i < newWeather.length; i++) {
-      // TODO: remove data
-      const { time, datum } = extractTimeFromRawDatum(newWeather[i]);
-      if (!nianticFetchingHours.includes(hour)) {
-        if (currentData[time] === null) currentData[time] = datum;
-      } else currentData[time] = datum;
-    }
-
-    writeToFile(RAW_PATH + fileName, JSON.stringify(currentData));
-    const translatedData: (string | null)[] = translateRawData(currentData);
-    for (const time in translatedData) {
-      const weather: string | null = translatedData[time];
-      const order: number = (Number(time) + 24 - hour) % 24;
-      if (order <= 12) {
-        outputData.push({
-          time: Number(time),
-          city: locationIdToLocation[id as LocationId],
-          weather,
-          types: inGameWeatherToType[weather as InGameWeather],
-          order,
-        });
-      }
     }
   }
 

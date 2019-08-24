@@ -1,4 +1,4 @@
-import { XMLHttpRequest } from 'xmlhttprequest-ts';
+import { XMLHttpRequest } from 'xmlhttprequest';
 import * as fs from 'fs';
 import { iconPhraseToInGameWeather, IconPhrase, WINDY } from './resources/game-info';
 import apiKeys from './resources/api-keys';
@@ -36,12 +36,12 @@ export function fetchWeather(locationId: LocationId): RawDatum[] {
     let xhttp = new XMLHttpRequest();
     let jsonOutput: RawDatum[] = [];
 
-    xhttp.onreadystatechange = () => {
-      if (xhttp.readyState === 4 && (xhttp.status === 200 || xhttp.status === 0))
-        jsonOutput = JSON.parse(xhttp.responseText) as RawDatum[];
-    };
+    // xhttp.onreadystatechange = () => {
+    //   if (xhttp.readyState === 4 && (xhttp.status === 200 || xhttp.status === 0))
+    // };
     xhttp.open('GET', url, false);
     xhttp.send();
+    jsonOutput = JSON.parse(xhttp.responseText) as RawDatum[];
 
     console.log(`   Location fetched: ${locationIdToLocation[locationId]}`);
 
