@@ -36,9 +36,6 @@ export function fetchWeather(locationId: LocationId): RawDatum[] {
     let xhttp = new XMLHttpRequest();
     let jsonOutput: RawDatum[] = [];
 
-    // xhttp.onreadystatechange = () => {
-    //   if (xhttp.readyState === 4 && (xhttp.status === 200 || xhttp.status === 0))
-    // };
     xhttp.open('GET', url, false);
     xhttp.send();
     jsonOutput = JSON.parse(xhttp.responseText) as RawDatum[];

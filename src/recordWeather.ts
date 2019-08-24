@@ -11,9 +11,10 @@ import {
   writeToFile,
   translateRawData,
 } from './utils';
+import { join } from 'path';
 
-const RAW_PATH = './raw_weather/';
-const TRANSLATED_PATH = './translated_weather/';
+export const RAW_PATH = './raw_weather/';
+export const TRANSLATED_PATH = './translated_weather/';
 const BKK_TZ_OFFSET = 7;
 
 let currentHour = -1;
@@ -76,7 +77,7 @@ function addNewRecords(hour: number) {
     }
   }
 
-  writeToFile(TRANSLATED_PATH + 'weather.json', JSON.stringify(outputData));
+  writeToFile(join(TRANSLATED_PATH, 'weather.json'), JSON.stringify(outputData));
   console.log(logMessage(hour, 'data recorded'));
   console.log();
 }
@@ -84,7 +85,7 @@ function addNewRecords(hour: number) {
 function removeOutdatedRecords(hour: number) {
   console.log(logMessage(hour, 'update records'));
 
-  const records: OutputDatum[] = JSON.parse(readLocalFile(TRANSLATED_PATH + 'weather.json'));
+  const records: OutputDatum[] = JSON.parse(readLocalFile(join(TRANSLATED_PATH, 'weather.json')));
   let currentOrder: number = 0;
   for (const record of records) {
     if (hour === record.time) {
@@ -97,7 +98,7 @@ function removeOutdatedRecords(hour: number) {
     if (record.order < currentOrder) record.weather = null;
   }
 
-  writeToFile(TRANSLATED_PATH + 'weather.json', JSON.stringify(records));
+  writeToFile(join(TRANSLATED_PATH, 'weather.json'), JSON.stringify(records));
   console.log(logMessage(hour, 'records updated'));
   console.log();
 }
