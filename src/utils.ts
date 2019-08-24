@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import { iconPhraseToInGameWeather, IconPhrase, WINDY } from './resources/game-info';
 import apiKeys from './resources/api-keys';
 import { LocationId, locationIdToLocation } from './resources/locations';
+import { extname } from 'path';
 
 const BASE_URL = 'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
 const MI_TO_KM = 1.609;
@@ -21,8 +22,15 @@ export function readLocalFile(url: string): string {
   }
 }
 
-export function writeToFile(fileName: string, content: string) {
-  fs.writeFileSync(fileName, content);
+export function writeToFile(fileName: string, content: any) {
+  fs.writeFileSync(fileName, JSON.stringify(content));
+  fs.writeFileSync(extendFileName(fileName, 'pretty'), JSON.stringify(content, undefined, 2));
+}
+
+function extendFileName(fileName: string, extension: string): string {
+  const ext: string = extname(fileName);
+  const withoutExt: string = fileName.substring(0, fileName.length - ext.length);
+  return `${withoutExt}.${extension}${ext}`;
 }
 
 export function getFileName(id: string): string {

@@ -15,6 +15,7 @@ import { join } from 'path';
 
 export const RAW_PATH = './raw_weather/';
 export const TRANSLATED_PATH = './translated_weather/';
+export const TRANSLATED_WEATHER = join(TRANSLATED_PATH, 'weather.json');
 const BKK_TZ_OFFSET = 7;
 
 let currentHour = -1;
@@ -37,7 +38,7 @@ function addNewRecords(hour: number) {
   for (const id in locationIdToLocation) {
     const fileName: string = getFileName(id);
     const currentData: (RawDatum | null)[] = JSON.parse(
-      readLocalFile(RAW_PATH + fileName),
+      readLocalFile(join(RAW_PATH, fileName)),
     ) as (RawDatum | null)[];
 
     try {
@@ -56,7 +57,7 @@ function addNewRecords(hour: number) {
         } else currentData[time] = datum;
       }
 
-      writeToFile(RAW_PATH + fileName, JSON.stringify(currentData));
+      writeToFile(join(RAW_PATH, fileName), currentData);
       const translatedData: (string | null)[] = translateRawData(currentData);
       for (const time in translatedData) {
         const weather: string | null = translatedData[time];
@@ -76,16 +77,14 @@ function addNewRecords(hour: number) {
       return;
     }
   }
-
-  writeToFile(join(TRANSLATED_PATH, 'weather.json'), JSON.stringify(outputData));
+  writeToFile(TRANSLATED_WEATHER, outputData);
   console.log(logMessage(hour, 'data recorded'));
   console.log();
 }
 
 function removeOutdatedRecords(hour: number) {
   console.log(logMessage(hour, 'update records'));
-
-  const records: OutputDatum[] = JSON.parse(readLocalFile(join(TRANSLATED_PATH, 'weather.json')));
+  const records: OutputDatum[] = JSON.parse(readLocalFile(TRANSLATED_WEATHER));
   let currentOrder: number = 0;
   for (const record of records) {
     if (hour === record.time) {
@@ -97,8 +96,7 @@ function removeOutdatedRecords(hour: number) {
   for (const record of records) {
     if (record.order < currentOrder) record.weather = null;
   }
-
-  writeToFile(join(TRANSLATED_PATH, 'weather.json'), JSON.stringify(records));
+  writeToFile(TRANSLATED_WEATHER, records);
   console.log(logMessage(hour, 'records updated'));
   console.log();
 }
