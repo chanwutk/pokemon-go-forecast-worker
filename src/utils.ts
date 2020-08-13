@@ -1,11 +1,16 @@
 import { XMLHttpRequest } from 'xmlhttprequest';
 import * as fs from 'fs';
-import { iconPhraseToInGameWeather, IconPhrase, WINDY } from './resources/game-info';
+import {
+  iconPhraseToInGameWeather,
+  IconPhrase,
+  WINDY,
+} from './resources/game-info';
 import apiKeys from './resources/api-keys';
 import { LocationId, locationIdToLocation } from './resources/locations';
 import { extname } from 'path';
 
-const BASE_URL = 'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
+const BASE_URL =
+  'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
 const MI_TO_KM = 1.609;
 
 let keyCounter = 0;
@@ -24,12 +29,18 @@ export function readLocalFile(url: string): string {
 
 export function writeToFile(fileName: string, content: any) {
   fs.writeFileSync(fileName, JSON.stringify(content));
-  fs.writeFileSync(extendFileName(fileName, 'pretty'), JSON.stringify(content, undefined, 2));
+  fs.writeFileSync(
+    extendFileName(fileName, 'pretty'),
+    JSON.stringify(content, undefined, 2),
+  );
 }
 
 function extendFileName(fileName: string, extension: string): string {
   const ext: string = extname(fileName);
-  const withoutExt: string = fileName.substring(0, fileName.length - ext.length);
+  const withoutExt: string = fileName.substring(
+    0,
+    fileName.length - ext.length,
+  );
   return `${withoutExt}.${extension}${ext}`;
 }
 
@@ -78,7 +89,8 @@ function translateWeather(datum: RawDatum): string {
   if (iconPhraseToInGameWeather[iconPhrase]) {
     const windSpeed: number = datum.Wind.Speed.Value * MI_TO_KM;
     const gustSpeed: number = datum.WindGust.Speed.Value * MI_TO_KM;
-    return (windSpeed >= 24.1 || windSpeed + gustSpeed >= 55) && !datum.HasPrecipitation
+    return (windSpeed >= 24.1 || windSpeed + gustSpeed >= 55) &&
+      !datum.HasPrecipitation
       ? WINDY
       : iconPhraseToInGameWeather[iconPhrase];
   } else {
@@ -88,11 +100,9 @@ function translateWeather(datum: RawDatum): string {
 }
 
 export function translateRawData(data: (RawDatum | null)[]): (string | null)[] {
-  return data.map(
-    (d: RawDatum | null): string | null => {
-      return d !== null ? translateWeather(d) : null;
-    },
-  );
+  return data.map((d: RawDatum | null): string | null => {
+    return d !== null ? translateWeather(d) : null;
+  });
 }
 
 export function logMessage(hour: number, message: string): string {

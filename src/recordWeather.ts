@@ -24,8 +24,9 @@ export default function recordWeather() {
   const date: Date = new Date();
   const offset: number = date.getTimezoneOffset() / 60;
   const hour: number = (date.getHours() + offset + BKK_TZ_OFFSET) % 24;
+  console.log('Repeat at', date.toString());
 
-  if (currentHour !== hour && date.getMinutes() > 0) {
+  if (currentHour !== hour) {
     currentHour = hour;
     (isHourToCheck(hour) ? addNewRecords : removeOutdatedRecords)(hour);
   }
