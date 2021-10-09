@@ -8,10 +8,17 @@ import {
 import apiKeys from './resources/api-keys';
 import { LocationId, locationIdToLocation } from './resources/locations';
 import { extname } from 'path';
+import https from 'https';
+import axios from 'axios';
+
+const credential = process.env.CREDENTIAL ?? '';
+console.log(credential);
 
 const BASE_URL =
   'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
 const MI_TO_KM = 1.609;
+
+const BASE_SERVER_URL = 'https://pokemon-go-forecast-server.herokuapp.com';
 
 let keyCounter = 0;
 
@@ -19,29 +26,25 @@ export const nianticFetchingHours = [2, 17];
 const extraFetchingHours = [3, 4, 5, 6, 7];
 const fetchingHours = nianticFetchingHours.concat(extraFetchingHours);
 
-export function readLocalFile(url: string): string {
+export async function readLocalFile(endpoint: string): Promise<any> {
   try {
-    return fs.readFileSync(url).toString();
+    return (await axios.get(BASE_SERVER_URL + endpoint)).data;
   } catch (err) {
+    console.error(err);
     return '[]';
   }
 }
 
-export function writeToFile(fileName: string, content: any) {
-  fs.writeFileSync(fileName, JSON.stringify(content));
-  fs.writeFileSync(
-    extendFileName(fileName, 'pretty'),
-    JSON.stringify(content, undefined, 2),
-  );
-}
-
-function extendFileName(fileName: string, extension: string): string {
-  const ext: string = extname(fileName);
-  const withoutExt: string = fileName.substring(
-    0,
-    fileName.length - ext.length,
-  );
-  return `${withoutExt}.${extension}${ext}`;
+export function writeToFile(endpoint: string, data: string, id?: number | string) {
+  axios
+    .post(BASE_SERVER_URL + endpoint, {id, data}, {
+      headers: {
+        'Content-Type': 'application/json',
+        credential,
+      },
+    })
+    .then(res => console.log(`Written to database (${endpoint}): ${res.status}`))
+    .catch(error => console.error(error.response.status, error.response.statusText));
 }
 
 export function getFileName(id: string): string {

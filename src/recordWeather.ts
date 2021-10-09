@@ -20,7 +20,7 @@ const BKK_TZ_OFFSET = 7;
 
 let currentHour = -1;
 
-export default function recordWeather() {
+export default async function recordWeather() {
   const date: Date = new Date();
   const offset: number = date.getTimezoneOffset() / 60;
   const hour: number = (date.getHours() + offset + BKK_TZ_OFFSET) % 24;
@@ -28,19 +28,17 @@ export default function recordWeather() {
 
   if (currentHour !== hour) {
     currentHour = hour;
-    (isHourToCheck(hour) ? addNewRecords : removeOutdatedRecords)(hour);
+    await (isHourToCheck(hour) ? addNewRecords : removeOutdatedRecords)(hour);
   }
 }
 
-function addNewRecords(hour: number) {
+async function addNewRecords(hour: number) {
   console.log(logMessage(hour, 'fetching data'));
 
   const outputData: OutputDatum[] = [];
   for (const id in locationIdToLocation) {
     const fileName: string = getFileName(id);
-    const currentData: (RawDatum | null)[] = JSON.parse(
-      readLocalFile(join(RAW_PATH, fileName)),
-    ) as (RawDatum | null)[];
+    const currentData: (RawDatum | null)[] = (await readLocalFile('/raw?id=' + id)) as (RawDatum | null)[];
 
     try {
       const newWeather: RawDatum[] = fetchWeather(id as LocationId);
@@ -58,7 +56,7 @@ function addNewRecords(hour: number) {
         } else currentData[time] = datum;
       }
 
-      writeToFile(join(RAW_PATH, fileName), currentData);
+      writeToFile('/modify-raw', JSON.stringify(currentData), id);
       const translatedData: (string | null)[] = translateRawData(currentData);
       for (const time in translatedData) {
         const weather: string | null = translatedData[time];
@@ -78,14 +76,14 @@ function addNewRecords(hour: number) {
       return;
     }
   }
-  writeToFile(TRANSLATED_WEATHER, outputData);
+  writeToFile('/modify-weather', JSON.stringify(outputData));
   console.log(logMessage(hour, 'data recorded'));
   console.log();
 }
 
-function removeOutdatedRecords(hour: number) {
+async function removeOutdatedRecords(hour: number) {
   console.log(logMessage(hour, 'update records'));
-  const records: OutputDatum[] = JSON.parse(readLocalFile(TRANSLATED_WEATHER));
+  const records: OutputDatum[] = await readLocalFile('/weather');
   let currentOrder: number = 0;
   for (const record of records) {
     if (hour === record.time) {
@@ -97,7 +95,7 @@ function removeOutdatedRecords(hour: number) {
   for (const record of records) {
     if (record.order < currentOrder) record.weather = null;
   }
-  writeToFile(TRANSLATED_WEATHER, records);
+  writeToFile('/modify-weather', JSON.stringify(records));
   console.log(logMessage(hour, 'records updated'));
   console.log();
 }

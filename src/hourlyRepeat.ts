@@ -3,8 +3,8 @@ const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
 
 export default (callback: () => any) => {
-  return function repeat() {
-    callback();
+  return async function repeat() {
+    await callback();
 
     const date = new Date();
     const minute = date.getMinutes();
