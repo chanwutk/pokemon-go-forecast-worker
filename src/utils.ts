@@ -36,9 +36,9 @@ export async function readLocalFile(endpoint: string): Promise<any> {
 
 export async function isDBAvailable(): Promise<boolean> {
   try {
-    return await axios
+    return await (axios
       .get(BASE_SERVER_URL + '/weather')
-      .then(res =>  res.status === 200);
+      .then(res =>  res.status === 200));
   } catch (error) {
     return false;
   }
