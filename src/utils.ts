@@ -12,7 +12,6 @@ import https from 'https';
 import axios from 'axios';
 
 const credential = process.env.CREDENTIAL ?? '';
-console.log(credential);
 
 const BASE_URL =
   'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
@@ -35,8 +34,8 @@ export async function readLocalFile(endpoint: string): Promise<any> {
   }
 }
 
-export function writeToFile(endpoint: string, data: string, id?: number | string) {
-  axios
+export async function writeToFile(endpoint: string, data: string, id?: number | string) {
+  await axios
     .post(BASE_SERVER_URL + endpoint, {id, data}, {
       headers: {
         'Content-Type': 'application/json',
