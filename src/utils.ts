@@ -34,6 +34,16 @@ export async function readLocalFile(endpoint: string): Promise<any> {
   }
 }
 
+export async function isDBAvailable(): Promise<boolean> {
+  try {
+    return await axios
+      .get(BASE_SERVER_URL + '/weather')
+      .then(res =>  res.status === 200);
+  } catch (error) {
+    return false;
+  }
+}
+
 export async function writeToFile(endpoint: string, data: string, id?: number | string) {
   await axios
     .post(BASE_SERVER_URL + endpoint, {id, data}, {
