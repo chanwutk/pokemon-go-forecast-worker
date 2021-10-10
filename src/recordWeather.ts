@@ -56,7 +56,7 @@ async function addNewRecords(hour: number) {
         } else currentData[time] = datum;
       }
 
-      writeToFile('/modify-raw', JSON.stringify(currentData), id);
+      await writeToFile('/modify-raw', JSON.stringify(currentData), id);
       const translatedData: (string | null)[] = translateRawData(currentData);
       for (const time in translatedData) {
         const weather: string | null = translatedData[time];
@@ -76,7 +76,7 @@ async function addNewRecords(hour: number) {
       return;
     }
   }
-  writeToFile('/modify-weather', JSON.stringify(outputData));
+  await writeToFile('/modify-weather', JSON.stringify(outputData));
   console.log(logMessage(hour, 'data recorded'));
   console.log();
 }
@@ -95,7 +95,7 @@ async function removeOutdatedRecords(hour: number) {
   for (const record of records) {
     if (record.order < currentOrder) record.weather = null;
   }
-  writeToFile('/modify-weather', JSON.stringify(records));
+  await writeToFile('/modify-weather', JSON.stringify(records));
   console.log(logMessage(hour, 'records updated'));
   console.log();
 }

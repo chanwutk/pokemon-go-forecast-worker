@@ -29,7 +29,7 @@ export async function readLocalFile(endpoint: string): Promise<any> {
   try {
     return (await axios.get(BASE_SERVER_URL + endpoint)).data;
   } catch (err) {
-    console.error(err);
+    console.error('error: ' + err);
     return '[]';
   }
 }
@@ -53,7 +53,7 @@ export async function writeToFile(endpoint: string, data: string, id?: number | 
       },
     })
     .then(res => console.log(`Written to database (${endpoint}): ${res.status}`))
-    .catch(error => console.error(error.response.status, error.response.statusText));
+    .catch(error => console.error('error: ' + error.response.status, error.response.statusText));
 }
 
 export function getFileName(id: string): string {
