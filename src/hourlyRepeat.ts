@@ -8,14 +8,15 @@ export default (callback: () => any) => {
 
     const date = new Date();
     const minute = date.getMinutes();
-    setTimeout(
-      repeat,
-      59 <= minute || minute === 0
+    const timeout =
+      (59 <= minute || minute === 0)
         ? 30 * SECOND
-        : HOUR - secondsPassHour(date) - 27 * SECOND,
-    );
+        : HOUR - secondsPassHour(date) - 27 * SECOND;
+
+    setTimeout(repeat, timeout);
   };
 };
 
-const secondsPassHour = (date: Date) =>
-  date.getMinutes() * MINUTE + date.getSeconds() * SECOND;
+function secondsPassHour(date: Date) {
+  return date.getMinutes() * MINUTE + date.getSeconds() * SECOND;
+}

@@ -1,5 +1,5 @@
 import { locationIdToLocation } from './resources/locations';
-import { isDBAvailable, writeToFile } from './utils';
+import { isDBAvailable, writeToDB } from './utils';
 import recordWeather from './recordWeather';
 import hourlyRepeat from './hourlyRepeat';
 
@@ -14,9 +14,9 @@ async function wait() {
 }
 
 async function start() {
-  await writeToFile('/clear-records', '');
+  await writeToDB('/clear-records', '');
   for (const id in locationIdToLocation) {
-    await writeToFile('/modify-raw', INITIAL_WEATHER_DATA, id);
+    await writeToDB('/modify-raw', INITIAL_WEATHER_DATA, id);
   }
 
   hourlyRepeat(recordWeather)();

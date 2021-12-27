@@ -3,12 +3,11 @@ import { inGameWeatherToType, InGameWeather } from './resources/game-info';
 import {
   isHourToCheck,
   logMessage,
-  getFileName,
-  readLocalFile,
+  getFromDB,
   fetchWeather,
   nianticFetchingHours,
   extractTimeFromRawDatum,
-  writeToFile,
+  writeToDB,
   translateRawData,
 } from './utils';
 import { join } from 'path';
@@ -37,8 +36,7 @@ async function addNewRecords(hour: number) {
 
   const outputData: OutputDatum[] = [];
   for (const id in locationIdToLocation) {
-    const fileName: string = getFileName(id);
-    const currentData: (RawDatum | null)[] = (await readLocalFile('/raw?id=' + id)) as (RawDatum | null)[];
+    const currentData: (RawDatum | null)[] = (await getFromDB('/raw?id=' + id)) as (RawDatum | null)[];
 
     try {
       const newWeather: RawDatum[] = fetchWeather(id as LocationId);
@@ -56,7 +54,7 @@ async function addNewRecords(hour: number) {
         } else currentData[time] = datum;
       }
 
-      await writeToFile('/modify-raw', JSON.stringify(currentData), id);
+      await writeToDB('/modify-raw', JSON.stringify(currentData), id);
       const translatedData: (string | null)[] = translateRawData(currentData);
       for (const time in translatedData) {
         const weather: string | null = translatedData[time];
@@ -76,14 +74,14 @@ async function addNewRecords(hour: number) {
       return;
     }
   }
-  await writeToFile('/modify-weather', JSON.stringify(outputData));
+  await writeToDB('/modify-weather', JSON.stringify(outputData));
   console.log(logMessage(hour, 'data recorded'));
   console.log();
 }
 
 async function removeOutdatedRecords(hour: number) {
   console.log(logMessage(hour, 'update records'));
-  const records: OutputDatum[] = await readLocalFile('/weather');
+  const records: OutputDatum[] = await getFromDB('/weather');
   let currentOrder: number = 0;
   for (const record of records) {
     if (hour === record.time) {
@@ -95,7 +93,7 @@ async function removeOutdatedRecords(hour: number) {
   for (const record of records) {
     if (record.order < currentOrder) record.weather = null;
   }
-  await writeToFile('/modify-weather', JSON.stringify(records));
+  await writeToDB('/modify-weather', JSON.stringify(records));
   console.log(logMessage(hour, 'records updated'));
   console.log();
 }

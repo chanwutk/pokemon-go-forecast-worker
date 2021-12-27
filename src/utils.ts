@@ -1,5 +1,4 @@
 import { XMLHttpRequest } from 'xmlhttprequest';
-import * as fs from 'fs';
 import {
   iconPhraseToInGameWeather,
   IconPhrase,
@@ -7,8 +6,6 @@ import {
 } from './resources/game-info';
 import apiKeys from './resources/api-keys';
 import { LocationId, locationIdToLocation } from './resources/locations';
-import { extname } from 'path';
-import https from 'https';
 import axios from 'axios';
 
 const credential = process.env.CREDENTIAL ?? '';
@@ -25,7 +22,7 @@ export const nianticFetchingHours = [2, 17];
 const extraFetchingHours = [3, 4, 5, 6, 7];
 const fetchingHours = nianticFetchingHours.concat(extraFetchingHours);
 
-export async function readLocalFile(endpoint: string): Promise<any> {
+export async function getFromDB(endpoint: string): Promise<any> {
   try {
     return (await axios.get(BASE_SERVER_URL + endpoint)).data;
   } catch (err) {
@@ -38,15 +35,15 @@ export async function isDBAvailable(): Promise<boolean> {
   try {
     return await (axios
       .get(BASE_SERVER_URL + '/weather')
-      .then(res =>  res.status === 200));
+      .then(res => res.status === 200));
   } catch (error) {
     return false;
   }
 }
 
-export async function writeToFile(endpoint: string, data: string, id?: number | string) {
+export async function writeToDB(endpoint: string, data: string, id?: number | string) {
   await axios
-    .post(BASE_SERVER_URL + endpoint, {id, data}, {
+    .post(BASE_SERVER_URL + endpoint, { id, data }, {
       headers: {
         'Content-Type': 'application/json',
         credential,
@@ -54,10 +51,6 @@ export async function writeToFile(endpoint: string, data: string, id?: number | 
     })
     .then(res => console.log(`Written to database (${endpoint}): ${res.status}`))
     .catch(error => console.error('error: ' + error.response.status, error.response.statusText));
-}
-
-export function getFileName(id: string): string {
-  return `weather_${id}.json`;
 }
 
 export function fetchWeather(locationId: LocationId): RawDatum[] {
