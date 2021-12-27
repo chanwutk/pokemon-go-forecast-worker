@@ -9,7 +9,7 @@ export default (callback: () => any) => {
     const date = new Date();
     const minute = date.getMinutes();
     const timeout =
-      (59 <= minute || minute === 0)
+      59 <= minute || minute === 0
         ? 30 * SECOND
         : HOUR - secondsPassHour(date) - 27 * SECOND;
 

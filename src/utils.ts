@@ -33,24 +33,39 @@ export async function getFromDB(endpoint: string): Promise<any> {
 
 export async function isDBAvailable(): Promise<boolean> {
   try {
-    return await (axios
+    return await axios
       .get(BASE_SERVER_URL + '/weather')
-      .then(res => res.status === 200));
+      .then((res) => res.status === 200);
   } catch (error) {
     return false;
   }
 }
 
-export async function writeToDB(endpoint: string, data: string, id?: number | string) {
+export async function writeToDB(
+  endpoint: string,
+  data: string,
+  id?: number | string,
+) {
   await axios
-    .post(BASE_SERVER_URL + endpoint, { id, data }, {
-      headers: {
-        'Content-Type': 'application/json',
-        credential,
+    .post(
+      BASE_SERVER_URL + endpoint,
+      { id, data },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          credential,
+        },
       },
-    })
-    .then(res => console.log(`Written to database (${endpoint}): ${res.status}`))
-    .catch(error => console.error('error: ' + error.response.status, error.response.statusText));
+    )
+    .then((res) =>
+      console.log(`Written to database (${endpoint}): ${res.status}`),
+    )
+    .catch((error) =>
+      console.error(
+        'error: ' + error.response.status,
+        error.response.statusText,
+      ),
+    );
 }
 
 export function fetchWeather(locationId: LocationId): RawDatum[] {
@@ -77,9 +92,7 @@ export function isHourToCheck(hour: number): boolean {
   return fetchingHours.includes(hour);
 }
 
-export function extractTimeFromRawDatum(
-  datum: RawDatum,
-): {
+export function extractTimeFromRawDatum(datum: RawDatum): {
   time: number;
   datum: RawDatum;
 } {
