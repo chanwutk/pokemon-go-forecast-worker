@@ -1,14 +1,13 @@
 import { isHourToCheck } from './utils';
 import { join } from 'path';
-import { addNewRecords } from './addNewRecords';
-import { removeOutdatedRecords } from './removeOutdatedRecords';
+import { addNewRecords } from './add-new-records';
+import { removeOutdatedRecords } from './remove-outdated-records';
+import { currentHour, setCurrentHour } from './current-hour';
 
 export const RAW_PATH = './raw_weather/';
 export const TRANSLATED_PATH = './translated_weather/';
 export const TRANSLATED_WEATHER = join(TRANSLATED_PATH, 'weather.json');
 const BKK_TZ_OFFSET = 7;
-
-export let currentHour = -1;
 
 export default async function recordWeather() {
   const date: Date = new Date();
@@ -17,7 +16,7 @@ export default async function recordWeather() {
   console.log('Repeat at', date.toString());
 
   if (currentHour !== hour) {
-    currentHour = hour;
+    setCurrentHour(hour);
     await (isHourToCheck(hour) ? addNewRecords : removeOutdatedRecords)(hour);
   }
 }

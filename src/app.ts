@@ -1,7 +1,7 @@
 import { locationIdToLocation } from './resources/locations';
 import { isDBAvailable, writeToDB } from './utils';
-import recordWeather from './recordWeather';
-import hourlyRepeat from './hourlyRepeat';
+import recordWeather from './record-weather';
+import hourlyRepeat from './hourly-repeat';
 
 const INITIAL_WEATHER_DATA = JSON.stringify(new Array(24).fill(null));
 

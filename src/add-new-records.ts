@@ -9,7 +9,7 @@ import {
   writeToDB,
   translateRawData,
 } from './utils';
-import { currentHour } from './recordWeather';
+import { setCurrentHour } from './current-hour';
 
 export async function addNewRecords(hour: number) {
   console.log(logMessage(hour, 'fetching data'));
@@ -52,7 +52,7 @@ export async function addNewRecords(hour: number) {
         }
       }
     } catch (err) {
-      currentHour = -1;
+      setCurrentHour(-1);
       return;
     }
   }
