@@ -39,7 +39,7 @@ function updateData(update: () => any) {
   }
   execSync('git pull', { cwd: DATA_DIR });
   update();
-  execSync('git add -A && git commit --amend && git push -f', { cwd: DATA_DIR });
+  execSync('git add -A && git commit --amend -m "update data" && git push -f', { cwd: DATA_DIR });
 }
 
 export function clearRecords() {
