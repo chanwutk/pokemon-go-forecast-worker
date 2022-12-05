@@ -22,46 +22,47 @@ export const nianticFetchingHours = [2, 17];
 const extraFetchingHours = [3, 4, 5, 6, 7];
 const fetchingHours = nianticFetchingHours.concat(extraFetchingHours);
 
-export function getFromDB(endpoint: string): any {
-  const url = `${BASE_DATA_URL}${endpoint}`;
-  const xhttp = new XMLHttpRequest();
-
-  xhttp.open('GET', url, false);
-  xhttp.send();
-
-  console.log(`   Data fetched: ${endpoint}`);
-  try {
-    return JSON.parse(xhttp.responseText)
-  } catch (e) {
-    if (!(e instanceof SyntaxError)) {
-      throw e;
-    }
-    return xhttp.responseText;
-  }
-}
-
-function updateData(update: () => any) {
+function updateDataRepo() {
   if (!fs.existsSync(DATA_DIR)) {
     execSync(`git clone git@github.com:chanwutk/pokemon-go-forecast-data.git ${DATA_DIR}`);
   }
   execSync('git pull', { cwd: DATA_DIR });
-  update();
-  let log;
-  try {
-    log = getFromDB('updates.log')
-  } catch {
-    log = '';
-  }
-  if (typeof log !== 'string') {
+}
+
+export function getFromDB(filename: string): any {
+  updateDataRepo();
+  if (!fs.existsSync(DATA_DIR + filename)) {
     throw new Error();
   }
+  const content = fs.readFileSync(DATA_DIR + filename).toString();
 
-  let lines = log.split('\n');
-  if (lines.length >= 1000) {
-    lines = lines.slice(-999);
+  console.log(`   Data fetched: ${filename}`);
+  try {
+    return JSON.parse(content)
+  } catch (e) {
+    if (!(e instanceof SyntaxError)) {
+      throw e;
+    }
+    return content;
   }
-  lines.push('update: ' + (new Date()).toString());
-  fs.writeFileSync(DATA_DIR + 'updates.log', lines.join('\n'));
+}
+
+function updateData(update: () => any) {
+  updateDataRepo();
+  update();
+
+  let log: string[];
+  if (!fs.existsSync(DATA_DIR + 'updates.log')) {
+    log = [];
+  } else {
+    log = fs.readFileSync(DATA_DIR + 'updates.log').toString().split('\n');
+  }
+
+  if (log.length >= 1000) {
+    log = log.slice(-999);
+  }
+  log.push('update: ' + (new Date()).toString());
+  fs.writeFileSync(DATA_DIR + 'updates.log', log.join('\n'));
   execSync('git add -A && git commit --amend -m "update data" && git push -f', { cwd: DATA_DIR });
 }
 
