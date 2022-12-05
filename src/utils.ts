@@ -43,7 +43,7 @@ function updateData(update: () => any) {
 }
 
 export function clearRecords() {
-  updateData(() => execSync('rm *.json', { cwd: DATA_DIR }));
+  updateData(() => execSync('rm *.json || echo "no json files"', { cwd: DATA_DIR }));
 }
 
 export function writeToDB(
