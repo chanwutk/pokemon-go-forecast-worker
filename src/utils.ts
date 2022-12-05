@@ -6,15 +6,15 @@ import {
 } from './resources/game-info';
 import apiKeys from './resources/api-keys';
 import { LocationId, locationIdToLocation } from './resources/locations';
-import axios from 'axios';
-
-const credential = process.env.CREDENTIAL ?? '';
+import fs from 'fs';
+import { execSync } from 'child_process';
 
 const BASE_URL =
   'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
 const MI_TO_KM = 1.609;
 
-const BASE_SERVER_URL = 'https://pokemon-go-forecast-server.herokuapp.com';
+const BASE_DATA_URL = 'https://raw.githubusercontent.com/chanwutk/pokemon-go-forecast/data/';
+const DATA_DIR = '../pokemon-go-forecast-data/';
 
 let keyCounter = 0;
 
@@ -22,50 +22,35 @@ export const nianticFetchingHours = [2, 17];
 const extraFetchingHours = [3, 4, 5, 6, 7];
 const fetchingHours = nianticFetchingHours.concat(extraFetchingHours);
 
-export async function getFromDB(endpoint: string): Promise<any> {
-  try {
-    return (await axios.get(BASE_SERVER_URL + endpoint)).data;
-  } catch (err) {
-    console.error('error: ' + err);
-    return '[]';
-  }
+export function getFromDB(endpoint: string): any {
+  const url = `${BASE_DATA_URL}${endpoint}`;
+  const xhttp = new XMLHttpRequest();
+
+  xhttp.open('GET', url, false);
+  xhttp.send();
+
+  console.log(`   Data fetched: ${endpoint}`);
+  return JSON.parse(xhttp.responseText)
 }
 
-export async function isDBAvailable(): Promise<boolean> {
-  try {
-    return await axios
-      .get(BASE_SERVER_URL + '/weather')
-      .then((res) => res.status === 200);
-  } catch (error) {
-    return false;
+function updateData(update: () => any) {
+  if (!fs.existsSync(DATA_DIR)) {
+    execSync(`git clone git@github.com:chanwutk/pokemon-go-forecast-data.git ${DATA_DIR}`);
   }
+  execSync('git pull', { cwd: DATA_DIR });
+  update();
+  execSync('git add -A && git commit --amend && git push -f', { cwd: DATA_DIR });
 }
 
-export async function writeToDB(
-  endpoint: string,
+export function clearRecords() {
+  updateData(() => execSync('rm *.json', { cwd: DATA_DIR }));
+}
+
+export function writeToDB(
+  filename: string,
   data: string,
-  id?: number | string,
 ) {
-  await axios
-    .post(
-      BASE_SERVER_URL + endpoint,
-      { id, data },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          credential,
-        },
-      },
-    )
-    .then((res) =>
-      console.log(`Written to database (${endpoint}): ${res.status}`),
-    )
-    .catch((error) =>
-      console.error(
-        'error: ' + error.response.status,
-        error.response.statusText,
-      ),
-    );
+  updateData(() => fs.writeFileSync(DATA_DIR + filename, data));
 }
 
 export function fetchWeather(locationId: LocationId): RawDatum[] {
