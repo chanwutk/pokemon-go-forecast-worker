@@ -60,7 +60,7 @@ function updateData(update: () => any) {
   if (lines.length >= 1000) {
     lines = lines.slice(-999);
   }
-  lines.push('update: ' + new Date().toString());
+  lines.push('update: ' + (new Date()).toString());
   fs.writeFileSync(DATA_DIR + 'updates.log', lines.join('\n'));
   execSync('git add -A && git commit --amend -m "update data" && git push -f', { cwd: DATA_DIR });
 }
