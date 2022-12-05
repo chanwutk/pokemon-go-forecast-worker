@@ -30,7 +30,14 @@ export function getFromDB(endpoint: string): any {
   xhttp.send();
 
   console.log(`   Data fetched: ${endpoint}`);
-  return JSON.parse(xhttp.responseText)
+  try {
+    return JSON.parse(xhttp.responseText)
+  } catch (e) {
+    if (!(e instanceof SyntaxError)) {
+      throw e;
+    }
+    return xhttp.responseText;
+  }
 }
 
 function updateData(update: () => any) {
@@ -39,11 +46,27 @@ function updateData(update: () => any) {
   }
   execSync('git pull', { cwd: DATA_DIR });
   update();
+  let log;
+  try {
+    log = getFromDB('updates.log')
+  } catch {
+    log = '';
+  }
+  if (typeof log !== 'string') {
+    throw new Error();
+  }
+
+  let lines = log.split('\n');
+  if (lines.length >= 1000) {
+    lines = lines.slice(-999);
+  }
+  lines.push('update: ' + new Date().toString());
+  fs.writeFileSync(DATA_DIR + 'updates.log', lines.join('\n'));
   execSync('git add -A && git commit --amend -m "update data" && git push -f', { cwd: DATA_DIR });
 }
 
 export function clearRecords() {
-  updateData(() => execSync("find . -name '*.pgf.json' -type f -delete", { cwd: DATA_DIR }));
+  updateData(() => execSync("find . -name '*.pgf*' -type f -delete", { cwd: DATA_DIR }));
 }
 
 export function writeToDB(

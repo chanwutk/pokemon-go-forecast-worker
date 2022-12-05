@@ -15,7 +15,7 @@ export async function removeOutdatedRecords(hour: number) {
     for (const record of records) {
       if (record.order < currentOrder) record.weather = null;
     }
-    writeToDB('weather.pgf.json', JSON.stringify(records));
+    writeToDB('weather.pgf.json', JSON.stringify(records, null, 2));
     console.log(logMessage(hour, 'records updated'));
     console.log();
   } catch {

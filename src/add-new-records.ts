@@ -41,7 +41,7 @@ export async function addNewRecords(hour: number) {
         } else currentData[time] = datum;
       }
 
-      writeToDB(`raw${id}.pgf.json`, JSON.stringify(currentData));
+      writeToDB(`raw${id}.pgf.json`, JSON.stringify(currentData, null, 2));
       const translatedData: (string | null)[] = translateRawData(currentData);
       for (const time in translatedData) {
         const weather: string | null = translatedData[time];
@@ -61,7 +61,7 @@ export async function addNewRecords(hour: number) {
       return;
     }
   }
-  writeToDB('weather.pgf.json', JSON.stringify(outputData));
+  writeToDB('weather.pgf.json', JSON.stringify(outputData, null, 2));
   console.log(logMessage(hour, 'data recorded'));
   console.log();
 }
