@@ -6,7 +6,7 @@ import { currentHour, setCurrentHour } from './current-hour';
 
 export const RAW_PATH = './raw_weather/';
 export const TRANSLATED_PATH = './translated_weather/';
-export const TRANSLATED_WEATHER = join(TRANSLATED_PATH, 'weather.json');
+export const TRANSLATED_WEATHER = join(TRANSLATED_PATH, 'weather.pgf.json');
 const BKK_TZ_OFFSET = 7;
 
 export default async function recordWeather() {

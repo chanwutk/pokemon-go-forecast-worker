@@ -18,7 +18,7 @@ export async function addNewRecords(hour: number) {
   for (const id in locationIdToLocation) {
     let currentData: (RawDatum | null)[];
     try {
-      currentData = (getFromDB(`raw${id}.json`)) as (RawDatum | null)[];
+      currentData = (getFromDB(`raw${id}.pgf.json`)) as (RawDatum | null)[];
       console.log(logMessage(hour, 'read data'))
     } catch {
       currentData = new Array(24).fill(null);
@@ -41,7 +41,7 @@ export async function addNewRecords(hour: number) {
         } else currentData[time] = datum;
       }
 
-      writeToDB(`raw${id}.json`, JSON.stringify(currentData));
+      writeToDB(`raw${id}.pgf.json`, JSON.stringify(currentData));
       const translatedData: (string | null)[] = translateRawData(currentData);
       for (const time in translatedData) {
         const weather: string | null = translatedData[time];
@@ -61,7 +61,7 @@ export async function addNewRecords(hour: number) {
       return;
     }
   }
-  writeToDB('weather.json', JSON.stringify(outputData));
+  writeToDB('weather.pgf.json', JSON.stringify(outputData));
   console.log(logMessage(hour, 'data recorded'));
   console.log();
 }

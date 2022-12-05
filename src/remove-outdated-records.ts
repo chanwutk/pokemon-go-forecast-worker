@@ -3,7 +3,7 @@ import { logMessage, getFromDB, writeToDB } from './utils';
 export async function removeOutdatedRecords(hour: number) {
   console.log(logMessage(hour, 'update records'));
   try {
-    const records: OutputDatum[] = getFromDB('weather.json');
+    const records: OutputDatum[] = getFromDB('weather.pgf.json');
     let currentOrder: number = 0;
     for (const record of records) {
       if (hour === record.time) {
@@ -15,11 +15,11 @@ export async function removeOutdatedRecords(hour: number) {
     for (const record of records) {
       if (record.order < currentOrder) record.weather = null;
     }
-    writeToDB('weather.json', JSON.stringify(records));
+    writeToDB('weather.pgf.json', JSON.stringify(records));
     console.log(logMessage(hour, 'records updated'));
     console.log();
   } catch {
-    writeToDB('weather.json', '[]');
+    writeToDB('weather.pgf.json', '[]');
     console.log(logMessage(hour, 'records updated (empty weather)'));
     console.log();
   }
