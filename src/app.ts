@@ -14,4 +14,5 @@ async function start() {
   hourlyRepeat(recordWeather)();
 }
 
+console.log('server started');
 start();
