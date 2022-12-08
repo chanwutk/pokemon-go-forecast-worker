@@ -13,7 +13,8 @@ const BASE_URL =
   'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
 const MI_TO_KM = 1.609;
 
-const BASE_DATA_URL = 'https://github.com/chanwutk/pokemon-go-forecast-data/blob/main/';
+const BASE_DATA_URL =
+  'https://github.com/chanwutk/pokemon-go-forecast-data/blob/main/';
 const DATA_DIR = '../pokemon-go-forecast-data/';
 
 let keyCounter = 0;
@@ -24,7 +25,9 @@ const fetchingHours = nianticFetchingHours.concat(extraFetchingHours);
 
 function updateDataRepo() {
   if (!fs.existsSync(DATA_DIR)) {
-    execSync(`git clone git@github.com:chanwutk/pokemon-go-forecast-data.git ${DATA_DIR}`);
+    execSync(
+      `git clone git@github.com:chanwutk/pokemon-go-forecast-data.git ${DATA_DIR}`,
+    );
   }
   execSync('git pull', { cwd: DATA_DIR });
 }
@@ -38,7 +41,7 @@ export function getFromDB(filename: string): any {
 
   console.log(`   Data fetched: ${filename}`);
   try {
-    return JSON.parse(content)
+    return JSON.parse(content);
   } catch (e) {
     if (!(e instanceof SyntaxError)) {
       throw e;
@@ -55,25 +58,29 @@ function updateData(update: () => any) {
   if (!fs.existsSync(DATA_DIR + 'updates.log')) {
     log = [];
   } else {
-    log = fs.readFileSync(DATA_DIR + 'updates.log').toString().split('\n');
+    log = fs
+      .readFileSync(DATA_DIR + 'updates.log')
+      .toString()
+      .split('\n');
   }
 
   if (log.length >= 1000) {
     log = log.slice(-999);
   }
-  log.push('update: ' + (new Date()).toString());
+  log.push('update: ' + new Date().toString());
   fs.writeFileSync(DATA_DIR + 'updates.log', log.join('\n'));
-  execSync('git add -A && git commit --amend -m "update data" && git push -f', { cwd: DATA_DIR });
+  execSync('git add -A && git commit --amend -m "update data" && git push -f', {
+    cwd: DATA_DIR,
+  });
 }
 
 export function clearRecords() {
-  updateData(() => execSync("find . -name '*.pgf*' -type f -delete", { cwd: DATA_DIR }));
+  updateData(() =>
+    execSync("find . -name '*.pgf*' -type f -delete", { cwd: DATA_DIR }),
+  );
 }
 
-export function writeToDB(
-  filename: string,
-  data: string,
-) {
+export function writeToDB(filename: string, data: string) {
   updateData(() => fs.writeFileSync(DATA_DIR + filename, data));
 }
 

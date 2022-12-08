@@ -18,11 +18,11 @@ export async function addNewRecords(hour: number) {
   for (const id in locationIdToLocation) {
     let currentData: (RawDatum | null)[];
     try {
-      currentData = (getFromDB(`raw${id}.pgf.json`)) as (RawDatum | null)[];
-      console.log(logMessage(hour, 'read data'))
+      currentData = getFromDB(`raw${id}.pgf.json`) as (RawDatum | null)[];
+      console.log(logMessage(hour, 'read data'));
     } catch {
       currentData = new Array(24).fill(null);
-      console.log(logMessage(hour, 'empty data'))
+      console.log(logMessage(hour, 'empty data'));
     }
 
     try {
