@@ -14,8 +14,6 @@ const BASE_URL =
 const MI_TO_KM = 1.609;
 
 const GIT_REPO = 'git@github.com:chanwutk/pokemon-go-forecast-data.git'
-const BASE_DATA_URL =
-  'https://github.com/chanwutk/pokemon-go-forecast-data/blob/main/';
 const DATA_DIR = '../pokemon-go-forecast-data/';
 
 let keyCounter = 0;
@@ -24,7 +22,7 @@ export const nianticFetchingHours = [2, 17];
 const extraFetchingHours = [3, 4, 5, 6, 7];
 const fetchingHours = nianticFetchingHours.concat(extraFetchingHours);
 
-function updateDataRepo() {
+export function initDB() {
   if (!fs.existsSync(DATA_DIR)) {
     try {
       execSync(`git clone ${GIT_REPO} ${DATA_DIR}`);
@@ -33,19 +31,11 @@ function updateDataRepo() {
       throw e;
     }
   }
-  try {
-    execSync('git pull', { cwd: DATA_DIR });
-  } catch (e) {
-    console.error('git error: pull');
-    throw e;
-  }
 }
 
-export function getFromDB(filename: string): any {
-  // updateDataRepo();
-  // TODO: do not pull from database every time.
+export function readFromDB(filename: string): any {
   if (!fs.existsSync(DATA_DIR + filename)) {
-    throw new Error('data directory does not exist');
+    throw new Error('file does not exist');
   }
   const content = fs.readFileSync(DATA_DIR + filename).toString();
 
@@ -61,7 +51,10 @@ export function getFromDB(filename: string): any {
 }
 
 function updateData(update: () => any) {
-  // updateDataRepo();
+  if (!fs.existsSync(DATA_DIR)) {
+    throw new Error('data directory does not exist');
+  }
+
   update();
 
   let log: string[];
@@ -85,15 +78,6 @@ function updateData(update: () => any) {
 }
 
 export function clearRecords() {
-  if (!fs.existsSync(DATA_DIR)) {
-    try {
-      execSync(`git clone ${GIT_REPO} ${DATA_DIR}`);
-    } catch (e) {
-      console.error('git error: clone');
-      throw e;
-    }
-  }
-
   updateData(() =>
     execSync("find . -name '*.pgf*' -type f -delete", { cwd: DATA_DIR }),
   );

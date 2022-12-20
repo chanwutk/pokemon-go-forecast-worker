@@ -2,7 +2,7 @@ import { locationIdToLocation, LocationId } from './resources/locations';
 import { inGameWeatherToType, InGameWeather } from './resources/game-info';
 import {
   logMessage,
-  getFromDB,
+  readFromDB,
   fetchWeather,
   nianticFetchingHours,
   extractTimeFromRawDatum,
@@ -18,7 +18,7 @@ export async function addNewRecords(hour: number) {
   for (const id in locationIdToLocation) {
     let currentData: (RawDatum | null)[];
     try {
-      currentData = getFromDB(`raw${id}.pgf.json`) as (RawDatum | null)[];
+      currentData = readFromDB(`raw${id}.pgf.json`) as (RawDatum | null)[];
       console.log(logMessage(hour, 'read data'));
     } catch {
       currentData = new Array(24).fill(null);
