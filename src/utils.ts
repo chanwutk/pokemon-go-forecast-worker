@@ -13,7 +13,7 @@ const BASE_URL =
   'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
 const MI_TO_KM = 1.609;
 
-const GIT_REPO = 'git@github.com:chanwutk/pokemon-go-forecast-data.git'
+const GIT_REPO = 'git@github.com:chanwutk/pokemon-go-forecast-data.git';
 const DATA_DIR = '../pokemon-go-forecast-data/';
 
 let keyCounter = 0;
