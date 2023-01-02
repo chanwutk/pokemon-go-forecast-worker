@@ -26,7 +26,6 @@ const fetchingHours = nianticFetchingHours.concat(extraFetchingHours);
 export function initDB() {
   if (!fs.existsSync(DATA_DIR)) {
     try {
-      fs.rmSync(DATA_DIR, { recursive: true, force: true });
       execSync(`git clone ${GIT_REPO} ${DATA_DIR}`);
     } catch (e) {
       console.error('git error: clone');
