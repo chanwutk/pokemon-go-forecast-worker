@@ -1,5 +1,5 @@
 import { locationIdToLocation } from './resources/locations';
-import { clearRecords, initDB, writeToDB } from './utils';
+import { clearRecords, initDB, pushData, writeToDB } from './utils';
 import recordWeather from './record-weather';
 import hourlyRepeat from './hourly-repeat';
 
@@ -11,7 +11,8 @@ initDB();
 clearRecords();
 
 for (const id in locationIdToLocation) {
-  writeToDB(`raw${id}.pgf.json`, INITIAL_WEATHER_DATA);
+  writeToDB(`raw${id}.pgf.json`, INITIAL_WEATHER_DATA, false);
 }
+pushData();
 
 hourlyRepeat(recordWeather)();

@@ -8,13 +8,14 @@ import apiKeys from './resources/api-keys';
 import { LocationId, locationIdToLocation } from './resources/locations';
 import fs from 'fs';
 import { execSync } from 'child_process';
+import * as path from 'path';
 
 const BASE_URL =
   'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
 const MI_TO_KM = 1.609;
 
 const GIT_REPO = 'git@github.com:chanwutk/pokemon-go-forecast-data.git';
-const DATA_DIR = '../pokemon-go-forecast-data/';
+const DATA_DIR = '../pokemon-go-forecast-data';
 
 let keyCounter = 0;
 
@@ -25,6 +26,7 @@ const fetchingHours = nianticFetchingHours.concat(extraFetchingHours);
 export function initDB() {
   if (!fs.existsSync(DATA_DIR)) {
     try {
+      fs.rmSync(DATA_DIR, { recursive: true, force: true });
       execSync(`git clone ${GIT_REPO} ${DATA_DIR}`);
     } catch (e) {
       console.error('git error: clone');
@@ -34,10 +36,10 @@ export function initDB() {
 }
 
 export function readFromDB(filename: string): any {
-  if (!fs.existsSync(DATA_DIR + filename)) {
+  if (!fs.existsSync(path.join(DATA_DIR, filename))) {
     throw new Error('file does not exist');
   }
-  const content = fs.readFileSync(DATA_DIR + filename).toString();
+  const content = fs.readFileSync(path.join(DATA_DIR, filename)).toString();
 
   console.log(`   Data fetched: ${filename}`);
   try {
@@ -50,7 +52,13 @@ export function readFromDB(filename: string): any {
   }
 }
 
-function updateData(update: () => any) {
+export function pushData() {
+  execSync('git add -A && git commit --amend -m "update data" && git push -f', {
+    cwd: DATA_DIR,
+  });
+}
+
+function updateData(update: () => any, push: boolean = true) {
   if (!fs.existsSync(DATA_DIR)) {
     throw new Error('data directory does not exist');
   }
@@ -58,11 +66,11 @@ function updateData(update: () => any) {
   update();
 
   let log: string[];
-  if (!fs.existsSync(DATA_DIR + 'updates.log')) {
+  if (!fs.existsSync(path.join(DATA_DIR, 'updates.log'))) {
     log = [];
   } else {
     log = fs
-      .readFileSync(DATA_DIR + 'updates.log')
+      .readFileSync(path.join(DATA_DIR, 'updates.log'))
       .toString()
       .split('\n');
   }
@@ -71,20 +79,26 @@ function updateData(update: () => any) {
     log = log.slice(-999);
   }
   log.push('update: ' + new Date().toString());
-  fs.writeFileSync(DATA_DIR + 'updates.log', log.join('\n'));
-  execSync('git add -A && git commit --amend -m "update data" && git push -f', {
-    cwd: DATA_DIR,
-  });
+  fs.writeFileSync(path.join(DATA_DIR, 'updates.log'), log.join('\n'));
+
+  if (push) {
+    pushData();
+  }
 }
 
-export function clearRecords() {
-  updateData(() =>
-    execSync("find . -name '*.pgf*' -type f -delete", { cwd: DATA_DIR }),
+export function clearRecords(push: boolean = true) {
+  updateData(
+    () => execSync("find . -name '*.pgf*' -type f -delete", { cwd: DATA_DIR }),
+    push,
   );
 }
 
-export function writeToDB(filename: string, data: string) {
-  updateData(() => fs.writeFileSync(DATA_DIR + filename, data));
+export function writeToDB(
+  filename: string,
+  data: string,
+  push: boolean = true,
+) {
+  updateData(() => fs.writeFileSync(path.join(DATA_DIR, filename), data), push);
 }
 
 export function fetchWeather(locationId: LocationId): RawDatum[] {
