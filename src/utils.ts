@@ -52,9 +52,9 @@ export function readFromDB(filename: string): any {
 }
 
 export function pushData() {
-  execSync('git add -A && git commit --amend -m "update data" && git push -f', {
-    cwd: DATA_DIR,
-  });
+  execSync('git add -A', { cwd: DATA_DIR });
+  execSync('git commit --amend -m "update data"', { cwd: DATA_DIR });
+  execSync('git push -f', { cwd: DATA_DIR });
 }
 
 function updateData(update: () => any, push: boolean = true) {
