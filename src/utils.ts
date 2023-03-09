@@ -5,7 +5,7 @@ import {
   WINDY,
 } from './resources/game-info';
 import apiKeys from './resources/api-keys';
-import { LocationId, locationIdToLocation } from './resources/locations';
+import { LocationId, locationIdToEngLocation } from './resources/locations';
 import fs from 'fs';
 import { execSync } from 'child_process';
 import * as path from 'path';
@@ -111,7 +111,7 @@ export function fetchWeather(locationId: LocationId): RawDatum[] {
     xhttp.send();
     jsonOutput = JSON.parse(xhttp.responseText) as RawDatum[];
 
-    console.log(`   Location fetched: ${locationIdToLocation[locationId]}`);
+    console.log(`   Location fetched: ${locationIdToEngLocation[locationId]}`);
 
     return jsonOutput;
   } catch (err) {
