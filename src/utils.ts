@@ -15,7 +15,10 @@ const BASE_URL =
 const MI_TO_KM = 1.609;
 
 const GIT_REPO = 'git@github.com:chanwutk/pokemon-go-forecast-data.git';
-const DATA_DIR = process.env.PGF_DATA;
+if (!('PGF_DATA' in process.env)) {
+  throw new Error('PGF_DATA not in env')
+}
+const DATA_DIR = process.env.PGF_DATA ?? './pokemon-go-forecast-data';
 
 let keyCounter = 0;
 
@@ -25,9 +28,6 @@ const fetchingHours = nianticFetchingHours.concat(extraFetchingHours);
 
 export function initDB() {
   console.log('initializing db');
-  if (DATA_DIR === undefined) {
-    throw Error('undefined PGF_DATA');
-  }
 
   if (!fs.existsSync(DATA_DIR)) {
     try {
