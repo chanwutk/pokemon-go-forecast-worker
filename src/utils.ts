@@ -64,7 +64,11 @@ export function pushData() {
   execSync('git push -f', { cwd: DATA_DIR });
 }
 
-function updateData(update: () => any, push: boolean = true) {
+function updateData(
+  description: string,
+  update: () => any,
+  push: boolean = true,
+) {
   if (!fs.existsSync(DATA_DIR)) {
     throw new Error('data directory does not exist');
   }
@@ -81,7 +85,12 @@ function updateData(update: () => any, push: boolean = true) {
       .split('\n');
   }
 
-  log.unshift(`update: ${new Date().toString()} -- ${update.name}`);
+  let pushStatus: string = '[UPDATE]';
+  if (push) {
+    pushStatus = '  [PUSH]';
+  }
+
+  log.unshift(`${new Date().toString()} -- ${pushStatus} ${description}`);
   log = log.slice(0, LOG_SIZE);
 
   fs.writeFileSync(path.join(DATA_DIR, 'updates.log'), log.join('\n'));
@@ -93,6 +102,7 @@ function updateData(update: () => any, push: boolean = true) {
 
 export function clearRecords(push: boolean = true) {
   updateData(
+    'clear records',
     () => execSync("find . -name '*.pgf*' -type f -delete", { cwd: DATA_DIR }),
     push,
   );
@@ -103,7 +113,11 @@ export function writeToDB(
   data: string,
   push: boolean = true,
 ) {
-  updateData(() => fs.writeFileSync(path.join(DATA_DIR, filename), data), push);
+  updateData(
+    'write to db',
+    () => fs.writeFileSync(path.join(DATA_DIR, filename), data),
+    push,
+  );
 }
 
 export function fetchWeather(locationId: LocationId): RawDatum[] {
