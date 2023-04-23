@@ -20,6 +20,8 @@ if (!('PGF_DATA' in process.env)) {
 }
 const DATA_DIR = process.env.PGF_DATA ?? './pokemon-go-forecast-data';
 
+const LOG_SIZE = 2000;
+
 let keyCounter = 0;
 
 export const nianticFetchingHours = [2, 17];
@@ -79,10 +81,9 @@ function updateData(update: () => any, push: boolean = true) {
       .split('\n');
   }
 
-  if (log.length >= 1000) {
-    log = log.slice(-999);
-  }
-  log.push('update: ' + new Date().toString());
+  log.unshift(`update: ${new Date().toString()} -- ${update.name}`)
+  log = log.slice(0, LOG_SIZE);
+
   fs.writeFileSync(path.join(DATA_DIR, 'updates.log'), log.join('\n'));
 
   if (push) {
