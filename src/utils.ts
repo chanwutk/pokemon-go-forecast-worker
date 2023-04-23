@@ -122,17 +122,17 @@ export function writeToDB(
 
 export function fetchWeather(locationId: LocationId): RawDatum[] {
   try {
-    let url = `${BASE_URL}${locationId}?apikey=${apiKeys[keyCounter]}&details=true`;
+    const url = `${BASE_URL}${locationId}?apikey=${apiKeys[keyCounter]}&details=true`;
     keyCounter = (keyCounter + 1) % apiKeys.length;
-    let xhttp = new XMLHttpRequest();
-    let jsonOutput: RawDatum[] = [];
+    const xhttp = new XMLHttpRequest();
 
     xhttp.open('GET', url, false);
     xhttp.send();
-    jsonOutput = JSON.parse(xhttp.responseText) as RawDatum[];
+    const responseText = xhttp.responseText;
+    const jsonOutput = JSON.parse(responseText) as RawDatum[];
 
     console.log(`   Location fetched: ${locationIdToEngLocation[locationId]}`);
-    console.log(`   Reponse size (# of chars): ${jsonOutput.length}`);
+    console.log(`   Reponse size (# of chars): ${responseText.length}`);
 
     return jsonOutput;
   } catch (err) {
