@@ -59,9 +59,7 @@ export function readFromDB(filename: string): any {
 }
 
 export function pushData() {
-  execSync('git add -A', { cwd: DATA_DIR });
-  execSync('git commit --amend -m "update data"', { cwd: DATA_DIR });
-  execSync('git push -f', { cwd: DATA_DIR });
+  updateData('force push', () => null, true);
 }
 
 function updateData(
@@ -96,7 +94,9 @@ function updateData(
   fs.writeFileSync(path.join(DATA_DIR, 'updates.log'), log.join('\n'));
 
   if (push) {
-    pushData();
+    execSync('git add -A', { cwd: DATA_DIR });
+    execSync('git commit --amend -m "update data"', { cwd: DATA_DIR });
+    execSync('git push -f', { cwd: DATA_DIR });
   }
 }
 
@@ -114,7 +114,7 @@ export function writeToDB(
   push: boolean = true,
 ) {
   updateData(
-    'write to db',
+    `write to db (${filename})`,
     () => fs.writeFileSync(path.join(DATA_DIR, filename), data),
     push,
   );
