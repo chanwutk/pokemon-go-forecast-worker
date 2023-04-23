@@ -10,7 +10,7 @@ export const locationIdToLocation = {
 
 export type LocationId = keyof typeof locationIdToLocation;
 
-export const locationIdToEngLocation: {[key in LocationId]: string} = {
+export const locationIdToEngLocation: { [key in LocationId]: string } = {
   '318849': 'Bangkok',
   '318834': 'Ramkhamhaeng',
   '320623': 'Bang Phli',

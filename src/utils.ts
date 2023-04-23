@@ -16,7 +16,7 @@ const MI_TO_KM = 1.609;
 
 const GIT_REPO = 'git@github.com:chanwutk/pokemon-go-forecast-data.git';
 if (!('PGF_DATA' in process.env)) {
-  throw new Error('PGF_DATA not in env')
+  throw new Error('PGF_DATA not in env');
 }
 const DATA_DIR = process.env.PGF_DATA ?? './pokemon-go-forecast-data';
 
@@ -81,7 +81,7 @@ function updateData(update: () => any, push: boolean = true) {
       .split('\n');
   }
 
-  log.unshift(`update: ${new Date().toString()} -- ${update.name}`)
+  log.unshift(`update: ${new Date().toString()} -- ${update.name}`);
   log = log.slice(0, LOG_SIZE);
 
   fs.writeFileSync(path.join(DATA_DIR, 'updates.log'), log.join('\n'));

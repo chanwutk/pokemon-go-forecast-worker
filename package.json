@@ -8,10 +8,9 @@
     "url": "https://github.com/chanwutk/pokemon-go-forecast.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "prettierbase": "prettier --write src/{,**/,**/**/}*.ts",
     "start": "npm run build && node ./dist/app.js",
-    "build": "del-cli --force dist && tsc --project ."
+    "build": "rm -rf dist && tsc --project ."
   },
   "author": {
     "name": "Chanwut Kittivorawong",
@@ -19,11 +18,9 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^14.0.27",
-    "del-cli": "^3.0.1",
-    "prettier": "^2.0.5",
-    "ts-node": "^8.10.2",
-    "typescript": "^3.9.7"
+    "@types/node": "^18.16.0",
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.4"
   },
   "dependencies": {
     "xmlhttprequest": "^1.8.0"
