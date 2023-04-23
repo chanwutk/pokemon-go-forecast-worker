@@ -132,6 +132,7 @@ export function fetchWeather(locationId: LocationId): RawDatum[] {
     jsonOutput = JSON.parse(xhttp.responseText) as RawDatum[];
 
     console.log(`   Location fetched: ${locationIdToEngLocation[locationId]}`);
+    console.log(`   Reponse size (# of chars): ${jsonOutput.length}`);
 
     return jsonOutput;
   } catch (err) {
