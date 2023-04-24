@@ -7,6 +7,7 @@ function getKey(i: number) {
 
 let key: string | undefined;
 for (let i = 0; (key = getKey(i)) !== undefined; i++) {
+  console.log(`Key[${i}]: ${key}`);
   keys.push(key);
 }
 
