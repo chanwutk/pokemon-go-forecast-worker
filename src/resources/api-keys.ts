@@ -10,5 +10,6 @@ for (let i = 0; (key = getKey(i)) !== undefined; i++) {
   console.log(`Key[${i}]: ${key}`);
   keys.push(key);
 }
+console.log(`${keys.length} keys loaded`);
 
 export default keys;
