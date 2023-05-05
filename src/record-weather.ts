@@ -20,8 +20,14 @@ export default async function recordWeather() {
     try {
       await (isHourToCheck(hour) ? addNewRecords : removeOutdatedRecords)(hour);
     } catch (e) {
+      console.error();
+      console.error();
+      console.error();
       console.error('------------------------------ ERROR ------------------------------');
       console.error(e);
+      console.error();
+      console.error();
+      console.error();
     }
   }
 }
