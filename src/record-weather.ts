@@ -17,6 +17,11 @@ export default async function recordWeather() {
 
   if (currentHour !== hour) {
     setCurrentHour(hour);
-    await (isHourToCheck(hour) ? addNewRecords : removeOutdatedRecords)(hour);
+    try {
+      await (isHourToCheck(hour) ? addNewRecords : removeOutdatedRecords)(hour);
+    } catch (e) {
+      console.error('------------------------------ ERROR ------------------------------');
+      console.error(e);
+    }
   }
 }
