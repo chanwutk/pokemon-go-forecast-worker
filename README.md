@@ -35,3 +35,4 @@ Type=Application
 Name=PokemonGo
 Exec=xterm -hold -e 'source .bashrc && node /home/pi/pokemon-go-forecast-worker/dist/app.js'
 ```
+reference: https://learn.sparkfun.com/tutorials/how-to-run-a-raspberry-pi-program-on-startup/all
