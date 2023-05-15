@@ -1,4 +1,3 @@
-import { XMLHttpRequest } from 'xmlhttprequest';
 import {
   iconPhraseToInGameWeather,
   IconPhrase,
@@ -148,16 +147,56 @@ export function writeToDB(
   );
 }
 
-export function fetchWeather(locationId: LocationId): RawDatum[] {
+function isRawDatum(d: any): d is RawDatum {
+  try {
+    if (typeof d.DateTime !== 'string') {
+      return false;
+    }
+
+    if (typeof d.IconPhrase !== 'string') {
+      return false;
+    }
+
+    if (typeof d.Wind.Speed.Value !== 'number') {
+      return false;
+    }
+
+    if (typeof d.WindGust.Speed.Value !== 'number') {
+      return false;
+    }
+
+    if (typeof d.HasPrecipitation !== 'boolean') {
+      return false;
+    }
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function areRawData(dd: any): dd is RawDatum[] {
+  try {
+    if (!Array.isArray(dd)) {
+      return false;
+    }
+
+    return dd.every(isRawDatum);
+  } catch (e) {
+    return false;
+  }
+}
+
+export async function fetchWeather(locationId: LocationId): Promise<RawDatum[]> {
   try {
     const url = `${BASE_URL}${locationId}?apikey=${apiKeys[keyCounter]}&details=true`;
     keyCounter = (keyCounter + 1) % apiKeys.length;
-    const xhttp = new XMLHttpRequest();
 
-    xhttp.open('GET', url, false);
-    xhttp.send();
-    const responseText = xhttp.responseText;
-    const jsonOutput = JSON.parse(responseText) as RawDatum[];
+    const response = await fetch(url);
+    const jsonOutput = await response.json() as RawDatum[];
+    if (!areRawData(jsonOutput)) {
+      throw new Error(`Malform response: ${jsonOutput}`)
+    }
 
     const urls = url.split('?');
     console.log(`   URL: ${urls[0]}`);
@@ -165,7 +204,7 @@ export function fetchWeather(locationId: LocationId): RawDatum[] {
       console.log(`        ?${u}`);
     }
     console.log(`   Location fetched: ${locationIdToEngLocation[locationId]}`);
-    console.log(`   Reponse size (# of chars): ${responseText.length}`);
+    console.log(`   Reponse size (# of chars): ${JSON.stringify(jsonOutput).length}`);
 
     return jsonOutput;
   } catch (err) {

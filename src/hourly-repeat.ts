@@ -5,19 +5,24 @@ const SECOND = 1000;
 const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
 
+const MAILGUN_API = process.env.MAILGUN_APIKEY ?? '';
+const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN ?? 'sandbox.mailgun.org';
+const MAILGUN_TO = process.env.MAILGUN_TO ?? 'test@gmail.com';
+
+console.log('Mailgun API:', MAILGUN_API);
+console.log('Mailgun Domain:', MAILGUN_DOMAIN);
+console.log('Mailgun to:', MAILGUN_TO);
+
 export default (callback: () => any) => {
   return async function repeat() {
     try {
       await callback();
     } catch (e) {
-      const mg = new Mailgun(FormData).client({
-        username: 'api',
-        key: process.env.MAILGUN_APIKEY ?? '',
-      });
+      const mg = new Mailgun(FormData).client({ username: 'api', key: MAILGUN_API });
       mg.messages
-        .create(process.env.MAILGUN_DOMAIN ?? 'sandbox.mailgun.org', {
+        .create(MAILGUN_DOMAIN, {
           from: 'Pokemon Go Forecast <notification@pokemon-go-forecast>',
-          to: [process.env.MAILGUN_TO ?? 'test@gmail.com'],
+          to: [MAILGUN_TO],
           subject: 'Pokemon Go Forecast Error Message',
           text: `${e}`,
         })

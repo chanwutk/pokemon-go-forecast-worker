@@ -23,7 +23,7 @@ async function _addNewRecord(hour: number, id: string) {
   }
 
   try {
-    const newWeather: RawDatum[] = fetchWeather(id as LocationId);
+    const newWeather: RawDatum[] = await fetchWeather(id as LocationId);
     if (nianticFetchingHours.includes(hour)) {
       for (let i = 0; i < currentData.length; i++) {
         if (i !== hour && i !== hour + 1) currentData[i] = null;
