@@ -23,6 +23,8 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "form-data": "^4.0.0",
+    "mailgun.js": "^8.2.1",
     "xmlhttprequest": "^1.8.0"
   }
 }
