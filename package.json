@@ -16,7 +16,7 @@
     "name": "Chanwut Kittivorawong",
     "email": "chanwutk@gmail.com"
   },
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "devDependencies": {
     "@types/node": "^20.1.4",
     "prettier": "^2.8.8",
