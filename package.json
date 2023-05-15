@@ -18,7 +18,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^18.16.0",
+    "@types/node": "^20.1.4",
     "prettier": "^2.8.8",
     "typescript": "^5.0.4"
   },
