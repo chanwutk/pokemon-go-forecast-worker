@@ -8,6 +8,7 @@ import { LocationId, locationIdToEngLocation } from './resources/locations';
 import fs from 'fs';
 import { execSync } from 'child_process';
 import * as path from 'path';
+import { maskKey } from './mask-key';
 
 const BASE_URL =
   'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/';
@@ -263,15 +264,4 @@ export function translateRawData(data: (RawDatum | null)[]): (string | null)[] {
 
 export function logMessage(hour: number, message: string): string {
   return `${hour < 10 ? ' ' : ''}${hour}:00 : ${message}`;
-}
-
-export function maskKey(key: string) {
-  if (key.length < 10) {
-    return '**********';
-  }
-
-  return (
-    [...new Array(key.length - 5)].map(_ => '*').join('') +
-    key.slice(key.length - 5)
-  );
 }

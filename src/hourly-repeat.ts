@@ -1,6 +1,6 @@
 import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
-import { maskKey } from './utils';
+import { maskKey } from "./mask-key";
 
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
