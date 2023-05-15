@@ -200,8 +200,13 @@ export async function fetchWeather(locationId: LocationId): Promise<RawDatum[]> 
 
     const urls = url.split('?');
     console.log(`   URL: ${urls[0]}`);
-    for (const u of urls.slice(1)) {
-      console.log(`        ?${u}`);
+    if (urls.length > 1) {
+      urls.slice(1).forEach(u => {
+        u.split('&').forEach((kv, i, kvs) => {
+          const [k, v] = kv.split('=');
+          console.log(`        ${k}=${k === 'apikey' ? maskKey(v) : v}${i === kvs.length - 1 ? '' : '&'}`);
+        })
+      })
     }
     console.log(`   Location fetched: ${locationIdToEngLocation[locationId]}`);
     console.log(`   Reponse size (# of chars): ${JSON.stringify(jsonOutput).length}`);
@@ -250,4 +255,12 @@ export function translateRawData(data: (RawDatum | null)[]): (string | null)[] {
 
 export function logMessage(hour: number, message: string): string {
   return `${hour < 10 ? ' ' : ''}${hour}:00 : ${message}`;
+}
+
+export function maskKey(key: string) {
+  if (key.length < 10) {
+    return '**********';
+  }
+
+  return [...new Array(key.length - 5)].map(_ => '*').join('') + key.slice(key.length - 5);
 }

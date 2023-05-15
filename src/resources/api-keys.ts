@@ -1,3 +1,5 @@
+import { maskKey } from "../utils";
+
 const keys: string[] = [];
 
 function getKey(i: number) {
@@ -7,7 +9,7 @@ function getKey(i: number) {
 
 let key: string | undefined;
 for (let i = 0; (key = getKey(i)) !== undefined; i++) {
-  console.log(`Key[${i}]: ${key}`);
+  console.log(`Key[${i}]: ${maskKey(key)}`);
   keys.push(key);
 }
 console.log(`${keys.length} keys loaded`);
