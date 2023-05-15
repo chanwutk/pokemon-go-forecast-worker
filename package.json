@@ -9,7 +9,7 @@
   },
   "scripts": {
     "prettierbase": "prettier --write src/{,**/,**/**/}*.ts",
-    "start": "npm run build && node ./dist/app.js",
+    "start": "node ./dist/app.js",
     "build": "rm -rf dist && tsc --project ."
   },
   "author": {
