@@ -1,4 +1,4 @@
-import { maskKey } from "../utils";
+import { maskKey } from '../utils';
 
 const keys: string[] = [];
 

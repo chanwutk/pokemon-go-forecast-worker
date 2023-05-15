@@ -187,15 +187,17 @@ function areRawData(dd: any): dd is RawDatum[] {
   }
 }
 
-export async function fetchWeather(locationId: LocationId): Promise<RawDatum[]> {
+export async function fetchWeather(
+  locationId: LocationId,
+): Promise<RawDatum[]> {
   try {
     const url = `${BASE_URL}${locationId}?apikey=${apiKeys[keyCounter]}&details=true`;
     keyCounter = (keyCounter + 1) % apiKeys.length;
 
     const response = await fetch(url);
-    const jsonOutput = await response.json() as RawDatum[];
+    const jsonOutput = (await response.json()) as RawDatum[];
     if (!areRawData(jsonOutput)) {
-      throw new Error(`Malform response: ${jsonOutput}`)
+      throw new Error(`Malform response: ${jsonOutput}`);
     }
 
     const urls = url.split('?');
@@ -204,12 +206,18 @@ export async function fetchWeather(locationId: LocationId): Promise<RawDatum[]> 
       urls.slice(1).forEach(u => {
         u.split('&').forEach((kv, i, kvs) => {
           const [k, v] = kv.split('=');
-          console.log(`        ${k}=${k === 'apikey' ? maskKey(v) : v}${i === kvs.length - 1 ? '' : '&'}`);
-        })
-      })
+          console.log(
+            `        ${k}=${k === 'apikey' ? maskKey(v) : v}${
+              i === kvs.length - 1 ? '' : '&'
+            }`,
+          );
+        });
+      });
     }
     console.log(`   Location fetched: ${locationIdToEngLocation[locationId]}`);
-    console.log(`   Reponse size (# of chars): ${JSON.stringify(jsonOutput).length}`);
+    console.log(
+      `   Reponse size (# of chars): ${JSON.stringify(jsonOutput).length}`,
+    );
 
     return jsonOutput;
   } catch (err) {
@@ -262,5 +270,8 @@ export function maskKey(key: string) {
     return '**********';
   }
 
-  return [...new Array(key.length - 5)].map(_ => '*').join('') + key.slice(key.length - 5);
+  return (
+    [...new Array(key.length - 5)].map(_ => '*').join('') +
+    key.slice(key.length - 5)
+  );
 }

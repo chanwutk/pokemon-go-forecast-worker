@@ -19,7 +19,10 @@ export default (callback: () => any) => {
     try {
       await callback();
     } catch (e) {
-      const mg = new Mailgun(FormData).client({ username: 'api', key: MAILGUN_API });
+      const mg = new Mailgun(FormData).client({
+        username: 'api',
+        key: MAILGUN_API,
+      });
       mg.messages
         .create(MAILGUN_DOMAIN, {
           from: 'Pokemon Go Forecast <notification@pokemon-go-forecast>',
