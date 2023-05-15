@@ -21,10 +21,13 @@ export default async function recordWeather() {
       await (isHourToCheck(hour) ? addNewRecords : removeOutdatedRecords)(hour);
     } catch (e) {
       console.error();
-      console.error();
-      console.error();
-      console.error('------------------------------ ERROR ------------------------------');
+      console.error(
+        '------------------------------ Record Weather Error ------------------------------',
+      );
       console.error(e);
+      console.error(
+        '----------------------------------------------------------------------------------',
+      );
       console.error();
       console.error();
       console.error();

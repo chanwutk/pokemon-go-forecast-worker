@@ -93,11 +93,39 @@ function updateData(
 
   fs.writeFileSync(path.join(DATA_DIR, 'updates.log'), log.join('\n'));
 
-  if (push) {
-    execSync('git add -A', { cwd: DATA_DIR });
-    execSync('git commit --amend -m "update data"', { cwd: DATA_DIR });
-    execSync('git push -f', { cwd: DATA_DIR });
+  function repeeatPush(retryCount: number) {
+    if (!push || retryCount >= 5) {
+      return;
+    }
+
+    try {
+      execSync(
+        [
+          'git add --all',
+          'git commit --amend -m "update data"',
+          'git push --force',
+        ].join(' && '),
+        { cwd: DATA_DIR },
+      );
+      push = false;
+    } catch (e) {
+      console.error();
+      console.error(
+        '----------------------- Push Error -----------------------',
+      );
+      console.error(e);
+      console.error(
+        '----------------------------------------------------------',
+      );
+      console.error();
+      console.error();
+      console.error();
+    }
+
+    setTimeout(repeeatPush, 5 * 1000, retryCount + 1);
   }
+
+  repeeatPush(0);
 }
 
 export function clearRecords(push: boolean = true) {

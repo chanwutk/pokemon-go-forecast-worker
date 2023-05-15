@@ -63,15 +63,15 @@ async function _addNewRecord(hour: number, id: string) {
 function allDefined(
   records: (OutputDatum[] | undefined)[],
 ): records is OutputDatum[][] {
-  return records.every((r) => r !== undefined);
+  return records.every(r => r !== undefined);
 }
 
 export async function addNewRecords(hour: number) {
   console.log(logMessage(hour, 'fetching data'));
 
   await Promise.all(
-    Object.keys(locationIdToLocation).map((id) => _addNewRecord(hour, id)),
-  ).then((outputData) => {
+    Object.keys(locationIdToLocation).map(id => _addNewRecord(hour, id)),
+  ).then(outputData => {
     if (allDefined(outputData)) {
       writeToDB('weather.pgf.json', JSON.stringify(outputData.flat(), null, 2));
       console.log(logMessage(hour, 'data recorded'));
