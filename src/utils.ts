@@ -32,12 +32,15 @@ export function initDB() {
   console.log('initializing db');
 
   if (!fs.existsSync(DATA_DIR)) {
+    console.log('  cloning db repo');
     try {
       execSync(`git clone ${GIT_REPO} ${DATA_DIR}`);
     } catch (e) {
       console.error('git error: clone');
       throw e;
     }
+  } else {
+    console.log('  db repo already exists');
   }
 }
 
@@ -104,12 +107,12 @@ function updateData(
         fs.mkdirSync(data_tmp);
         execSync(`mv ${path.join(DATA_DIR, '*.json')} ${data_tmp}`);
         execSync(`mv ${path.join(DATA_DIR, '*.log')} ${data_tmp}`);
-        fs.rmdirSync(DATA_DIR, {recursive: true});
+        fs.rmSync(DATA_DIR, {recursive: true});
 
         initDB();
         execSync(`mv ${path.join(data_tmp, '*.json')} ${DATA_DIR}`);
         execSync(`mv ${path.join(data_tmp, '*.log')} ${DATA_DIR}`);
-        fs.rmdirSync(data_tmp, {recursive: true});
+        fs.rmSync(data_tmp, {recursive: true});
       }
 
       execSync(
