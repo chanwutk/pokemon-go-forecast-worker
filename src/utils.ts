@@ -99,6 +99,19 @@ function updateData(
     }
 
     try {
+      if (retryCount >= 2) {
+        const data_tmp = DATA_DIR + '_tmp';
+        fs.mkdirSync(data_tmp);
+        execSync(`mv ${path.join(DATA_DIR, '*.json')} ${data_tmp}`);
+        execSync(`mv ${path.join(DATA_DIR, '*.log')} ${data_tmp}`);
+        fs.rmdirSync(DATA_DIR, {recursive: true});
+
+        initDB();
+        execSync(`mv ${path.join(data_tmp, '*.json')} ${DATA_DIR}`);
+        execSync(`mv ${path.join(data_tmp, '*.log')} ${DATA_DIR}`);
+        fs.rmdirSync(data_tmp, {recursive: true});
+      }
+
       execSync(
         [
           'git add --all',
