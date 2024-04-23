@@ -214,7 +214,7 @@ export async function fetchWeather(
     const response = await fetch(url);
     const jsonOutput = (await response.json()) as RawDatum[];
     if (!areRawData(jsonOutput)) {
-      throw new Error(`Malform response: ${jsonOutput}`);
+      throw new Error(`Malform response: ${JSON.stringify(jsonOutput)}`);
     }
 
     const urls = url.split('?');
