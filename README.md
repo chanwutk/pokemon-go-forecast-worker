@@ -24,15 +24,12 @@ npm run start
 ```
 
 ### Autostart on raspberry pi
+Using Crontab
 ```bash
-mkdir /home/pi/.config/autostart
-vim /home/pi/.config/autostart/pokemongo.desktop
+crontab -e
 ```
-Then, paste this code into `pokemongo.desktop`
+Then, paste this code
 ```bash
-[Desktop Entry]
-Type=Application
-Name=PokemonGo
-Exec=xterm -hold -e 'source .bashrc && node /home/pi/pokemon-go-forecast-worker/dist/app.js'
+# need to sleep because the network might not be ready when the scrip starts.
+@reboot sleep 60 && /bin/bash /path/to/pokemon-go-forecast-worker/start-worker.sh
 ```
-reference: https://learn.sparkfun.com/tutorials/how-to-run-a-raspberry-pi-program-on-startup/all
